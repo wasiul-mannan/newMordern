@@ -1,50 +1,42 @@
 <?php
-    session_start();
-    //error_reporting(0);
-    include('include/config.php');
-    //include('include/checklogin.php');
-    //check_login();
+session_start();
+//error_reporting(0);
+include('include/config.php');
+//include('include/checklogin.php');
+//check_login();
 
-    if(isset($_POST['submit'])){	
+if(isset($_POST['submit']))
+{	
 
-        $pNametest=$_POST['pName'];
-        $pCareOftest=$_POST['pCareOf'];
-        $pMotherNametest=$_POST['pMotherName'];
-        $pPhoneNotest=$_POST['pPhoneNo'];
-        $pVillagetest=$_POST['pVillage'];
-        $pPostOfficetest=$_POST['pPostOffice'];
-        $pThanatest=$_POST['pThana'];
-        $pUpagillatest=$_POST['pUpagilla'];
-        $pDistricttest=$_POST['pDistrict'];
-        $pRefferedDoctortest=$_POST['pRefferedDoctor'];
-        
-        $pName=str_replace("'","\'","$pNametest");
+
+        $pName=$_POST['pName'];
         $pAge=$_POST['pAge'];
         $pBloodGroup=$_POST['pBloodGroup'];
         $pSex=$_POST['pSex'];
-        $pCareOf=str_replace("'","\'","$pCareOftest");
-        $pMotherName=str_replace("'","\'","$pMotherNametest");
-        $pPhoneNo=str_replace("'","\'","$pPhoneNotest");
-        $pVillage=str_replace("'","\'","$pVillagetest");
-        $pPostOffice=str_replace("'","\'","$pPostOfficetest");
-        $pThana=str_replace("'","\'","$pThanatest");
-        $pUpagilla=str_replace("'","\'","$pUpagillatest");
-        $pDistrict=str_replace("'","\'","$pDistricttest");
+        $pCareOf=$_POST['pCareOf'];
+        $pMotherName=$_POST['pMotherName'];
+        $pPhoneNo=$_POST['pPhoneNo'];
+        $pVillage=$_POST['pVillage'];
+        $pPostOffice=$_POST['pPostOffice'];
+        $pThana=$_POST['pThana'];
+        $pUpagilla=$_POST['pUpagilla'];
+        $pDistrict=$_POST['pDistrict'];
         $regiNo=$_POST['regiNo'];
-        $pRefferedDoctor=str_replace("'","\'","$pRefferedDoctortest");
+        $pRefferedDoctor=$_POST['pRefferedDoctor'];
         $pCabinNo=$_POST['pCabinNo'];
         $pWordNo=$_POST['pWordNo'];
         $pBedNo=$_POST['pBedNo'];
         $patientstatus="Active";
 
-        $sql=mysqli_query($con,"insert into patient(pName,	pAge,	pBloodGroup,	pSex,	pCareOf,	pMotherName,	pPhoneNo,	pVillage,	pPostOffice,	pThana,	pUpagilla,	pDistrict,	regiNo,	pRefferedDoctor,	pCabinNo, pWordNo, pWordNo, pBedNo,patientstatus) 
-                                              values('$pName','$pAge','$pBloodGroup','$pSex','$pCareOf','$pMotherName','$pPhoneNo','$pVillage','$pPostOffice','$pThana','$pUpagilla','$pDistrict','$regiNo','$pRefferedDoctor','$pCabinNo','$pWordNo','$pBedNo','$patientstatus')");
-        if($sql){
-              echo "<script>alert('Patient added Successfully');</script>";
-              header('location:index.php');
+$sql=mysqli_query($con,"insert into patient(pName,pAge,pBloodGroup,pSex,pCareOf,pMotherName,pPhoneNo,pVillage,pThana,pUpagilla,pDistrict,regiNo,pRefferedDoctor,pCabinNo,pWordNo,pBedNo,patientstatus) 
+                            values('$pName','$pAge','$pBloodGroup','$pSex','$pCareOf','$pMotherName','$pPhoneNo','$pVillage','$pThana','$pUpagilla','$pDistrict','$regiNo','$pRefferedDoctor','$pCabinNo','$pWordNo','$pBedNo','$patientstatus')");
+if($sql)
+{
+echo "<script>alert('Status added Successfully');</script>";
+header('location:index.php');
 
-        }   
-    }
+}
+}
 ?>
 
 <!doctype html>
@@ -185,7 +177,7 @@
                   </div>
                   <div class="form-group col-2">
                     <label for="pBloodGroup">Blood Group:</label>
-                    <select class="form-control" name="pBloodGroup" id="pBloodGroup">
+                    <select class="form-control" id="pBloodGroup" name="pBloodGroup">
                       <option>Choose...</option>
                       <option>A+</option>
                       <option>O+</option>
@@ -268,7 +260,7 @@
                   </div>
                   <div class="form-group col-3">
                     <label for="pRefferedDoctor">Reffered Doctor:</label>
-                    <select class="form-control" name="pRefferedDoctor" id="pRefferedDoctor">
+                    <select class="form-control" id="pRefferedDoctor" name="pRefferedDoctor">
                       <option>Choose...</option>
                       <option>Doctor A</option>
                       <option>Doctor B</option>
