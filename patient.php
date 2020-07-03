@@ -267,8 +267,14 @@ header('location:index.php');
                     <label for="pRefferedDoctor">Reffered Doctor:</label>
                     <select class="form-control" id="pRefferedDoctor" name="pRefferedDoctor">
                       <option>Choose...</option>
-                      <option>Doctor A</option>
-                      <option>Doctor B</option>
+<?php $ret=mysqli_query($con,"select * from doctor");
+	while($row=mysqli_fetch_array($ret))
+{
+?>
+	                    <option value="<?php echo htmlentities($row['d_name']);?>">
+<?php echo htmlentities($row['d_name']);?>
+	                    </option>
+<?php } ?>
                     </select>
                   </div>
                   <div class="form-group col-md-3">
@@ -285,15 +291,47 @@ header('location:index.php');
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="pCabinNo">Cabin No: </label>
-                    <input type="text" class="form-control" name="pCabinNo" placeholder="Enter cabin no">
+                    <select class="form-control" id="pCabinNo" name="pCabinNo">
+                      <option>Choose...</option>
+<?php $ret=mysqli_query($con,"select * from cabin");
+	while($row=mysqli_fetch_array($ret))
+{
+?>
+	                    <option value="<?php echo htmlentities($row['hosCabinName']);?>">
+<?php echo htmlentities($row['hosCabinName']);?>
+	                    </option>
+<?php } ?>
+                    </select>
                   </div>
+
                   <div class="form-group col-md-3">
                     <label for="pWordNo">Word No: </label>
-                    <input type="text" class="form-control" name="pWordNo" placeholder="Enter word no">
+                    <select class="form-control" id="pWordNo" name="pWordNo">
+                      <option>Choose...</option>
+<?php $ret=mysqli_query($con,"select * from word");
+	while($row=mysqli_fetch_array($ret))
+{
+?>
+	                    <option value="<?php echo htmlentities($row['hosWordName']);?>">
+<?php echo htmlentities($row['hosWordName']);?>
+	                    </option>
+<?php } ?>
+                    </select>
                   </div>
+
                   <div class="form-group col-md-3">
                     <label for="pBedNo">Bed No: </label>
-                    <input type="text" class="form-control" name="pBedNo" placeholder="Enter bed no">
+                    <select class="form-control" id="pBedNo" name="pBedNo">
+                      <option>Choose...</option>
+<?php $ret=mysqli_query($con,"select * from word");
+	while($row=mysqli_fetch_array($ret))
+{
+?>
+	                    <option value="<?php echo htmlentities($row['hosWordBed']);?>">
+<?php echo htmlentities($row['hosWordBed']);?>
+	                    </option>
+<?php } ?>
+                    </select>
                   </div>
                 </div>
 
@@ -570,42 +608,104 @@ if(isset($_POST['conform'])){
                     <!--Combination of (Cabin) or (Word and Bed-5) Such as. (Cabin No:3) or (Word-2, Bed-3)-->
                   </tr>
                 </thead>
+
+<?php
+  $patientstatus="Active";
+	$ret2=mysqli_query($con,"select * from patient where patientstatus='$patientstatus' ");
+	$cnt=1;
+	while ($row=mysqli_fetch_array($ret2)) {
+    $regiNo=$row['regiNo'];
+?>
                 <tbody>
                   <tr>
-                    <th>1</th>
-                    <td>REG-001</td>
-                    <td>John Elia</td>
-                    <td>Fransis</td>
-                    <td>30</td>
-                    <td>+9901253555</td>
-                    <td>25/05/2020</td>
-                    <td>NewYork, USA</td>
-                    <td>5000</td>
-                    <td>25/05/2020</td>
-                    <td>Doctor A</td>
-                    <td>Word-2, Bed-3</td>
-                  </tr>
-                  <tr>
-                    <th>2</th>
-                    <td>REG-002</td>
-                    <td>Bob</td>
-                    <td>Markus</td>
-                    <td>33</td>
-                    <td>+9901253555</td>
-                    <td>25/05/2020</td>
-                    <td>Lasvegus, USA</td>
-                    <td>5000</td>
-                    <td>25/05/2020</td>
-                    <td>Doctor B</td>
-                    <td>Cabin-3</td>
+                    <th><?php  echo $cnt;?></th>
+                    <td><?php  echo $regiNo ?></td>
+                    <td><?php  echo $row['pName'];?></td>
+                    <td><?php  echo $row['pCareOf'];?></td>
+                    <td><?php  echo $row['pAge'];?></td>
+                    <td><?php  echo $row['pPhoneNo'];?></td>
+                    <td><?php  echo $row['pDateTimeAdmission'];?></td>
+                    <td><?php  echo $row['pVillage'];?>, <?php  echo $row['pThana'];?>, <?php  echo $row['pUpagilla'];?></td>
+<?php
+$pDepositMoney=0;
+  $ret3=mysqli_query($con,"select * from patientadpayment where regiNo='$regiNo' ");
+  while ($row2=mysqli_fetch_array($ret3)) {
+    $pDepositMoney+=$row2['pDepositMoney'];
+    $pAdPaymentDate=$row2['pAdPaymentDate'];
+  }
+?>
+                    <td><?php  echo $pDepositMoney;?></td>
+                    <td><?php  echo $pAdPaymentDate;?></td>
+                    <td><?php  echo $row['pRefferedDoctor'];?></td>
+                    <td><?php  echo $row['pCabinNo'];?>, <?php  echo $row['pWordNo'];?>, <?php  echo $row['pBedNo'];?></td>
                   </tr>
                 </tbody>
+<?php 
+$cnt=$cnt+1;
+} 
+?>
               </table>
             </div>
           </div>
           <!-- End of Active Patient Tab -->
 
           <!-- Patient Profile Tab -->
+
+<?php
+
+$regiNo=null;
+$pName=null;
+$pAge=null;
+$pSex=null;
+$pBloodGroup=null;
+$pPhoneNo=null;
+$pCareOf=null;
+$pMotherName=null;
+$pVillage=null;
+$pThana=null;
+$pUpagilla=null;
+$regiNo=null;
+$pDateTimeAdmission=null;
+$pReleaseDate=null;
+$pRefferedDoctor=null;
+$pCabinNo=null;
+$pWordNo=null;
+$pBedNo=null;
+$pRemarks=null;
+
+if(isset($_POST['submitdone'])){
+
+$regiNo=$_POST['regiNo'];
+
+$ret=mysqli_query($con,"select * from patient where regiNo='$regiNo' ");
+$row=mysqli_fetch_array($ret);
+
+
+$pName=$row['pName'];
+$pAge=$row['pAge'];
+$pSex=$row['pSex'];
+$pBloodGroup=$row['pBloodGroup'];
+$pPhoneNo=$row['pPhoneNo'];
+$pCareOf=$row['pCareOf'];
+$pMotherName=$row['pMotherName'];
+$pVillage=$row['pVillage'];
+$pThana=$row['pThana'];
+$pUpagilla=$row['pUpagilla'];
+$regiNo=$row['regiNo'];
+$pDateTimeAdmission=$row['pDateTimeAdmission'];
+$pReleaseDate=$row['pReleaseDate'];
+$pRefferedDoctor=$row['pRefferedDoctor'];
+$pCabinNo=$row['pCabinNo'];
+$pWordNo=$row['pWordNo'];
+$pBedNo=$row['pBedNo'];
+$pRemarks=$row['pRemarks'];
+
+}
+
+?>
+
+
+
           <div class="tab-pane fade" id="patient-profile" role="tabpanel" aria-labelledby="palient-profile-tab">
 
             <div class="mx-1 my-3">
@@ -614,11 +714,11 @@ if(isset($_POST['conform'])){
 
                   <div class="row align-items-center">
                     <div class="col-8 mb-4 mb-xl-0">
-                      <form class="form-inline mb-2">
+                      <form class="form-inline mb-2" method="post">
                         <h6 class="text-center mt-2 col-lg-5">Patient Registration ID:</h6>
-                        <input class="form-control rounded-0 col-lg-4" type="search"
+                        <input class="form-control rounded-0 col-lg-4" type="search" name="regiNo"
                           placeholder="Enter Registration ID " aria-label="Search">
-                        <button class="btn btn-primary my-0 my-sm-0 rounded-0" type="submit">Search</button>
+                        <button class="btn btn-primary my-0 my-sm-0 rounded-0" type="submitdone" name="submitdone">Search</button>
                       </form>
                     </div>
                   </div>
@@ -632,40 +732,40 @@ if(isset($_POST['conform'])){
                         <div class="form-row">
                           <div class="form-group col-3">
                             <label for="profileName">Patient Name: </label>
-                            <input type="text" class="form-control" name="profileName" disabled="true">
+                            <input type="text" class="form-control" name="profileName" value="<?php  echo $pName;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="profileAge">Age: </label>
-                            <input type="number" class="form-control" name="profileAge" disabled="true">
+                            <input type="number" class="form-control" name="profileAge" value="<?php  echo $pAge;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="profileGender">Gender: </label>
-                            <input type="text" class="form-control" name="profileGender" disabled="true">
+                            <input type="text" class="form-control" name="profileGender" value="<?php  echo $pSex;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="profileBloodGroup">Blood Group: </label>
-                            <input type="text" class="form-control" name="profileBloodGroup" disabled="true">
+                            <input type="text" class="form-control" name="profileBloodGroup" value="<?php  echo $pBloodGroup;?>" disabled="true">
                           </div>
                           <div class="form-group col-3">
                             <label for="profilePhoneNo">Phone Number: </label>
-                            <input type="text" class="form-control" name="profilePhoneNo" disabled="true">
+                            <input type="text" class="form-control" name="profilePhoneNo" value="<?php  echo $pPhoneNo;?>" disabled="true">
                           </div>
                         </div>
 
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="profileCareOf">Father's / Husband's Name: </label>
-                            <input type="text" class="form-control" name="profileCareOf" disabled="true">
+                            <input type="text" class="form-control" name="profileCareOf" value="<?php  echo $pCareOf;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="profileMotherName">Mother's Name: </label>
-                            <input type="text" class="form-control" name="profileMotherName" disabled="true">
+                            <input type="text" class="form-control" name="profileMotherName" value="<?php  echo $pMotherName;?>" disabled="true">
                           </div>
 
                           <!-- Address is the combination of Village, PostOffice and District -->
                           <div class="form-group col-md-6">
                             <label for="profileAddress">Address: </label>
-                            <input type="text" class="form-control" name="profileAddress" disabled="true">
+                            <input type="text" class="form-control" name="profileAddress" value="<?php  echo $pVillage;?>, <?php  echo $pThana;?>, <?php  echo $pUpagilla;?>" disabled="true">
                           </div>
                         </div>
 
@@ -674,19 +774,19 @@ if(isset($_POST['conform'])){
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="profileregiNo">Registration No: </label>
-                            <input type="text" class="form-control" name="profileregiNo" disabled="true">
+                            <input type="text" class="form-control" name="profileregiNo" value="<?php  echo $regiNo;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="profileAdmissionDate">Admission Date:</label>
-                            <input type="text" class="form-control" name="profileAdmissionDate" disabled="true">
+                            <input type="text" class="form-control" name="profileAdmissionDate" value="<?php  echo $pDateTimeAdmission;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="profileReleaseDate">Release Date: </label>
-                            <input type="text" class="form-control" name="profileReleaseDate" disabled="true">
+                            <input type="text" class="form-control" name="profileReleaseDate" value="<?php  echo $pReleaseDate;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="profileRefferedDoctor">Reffered Doctor: </label>
-                            <input type="text" class="form-control" name="profileRefferedDoctor" disabled="true">
+                            <input type="text" class="form-control" name="profileRefferedDoctor" value="<?php  echo $pRefferedDoctor;?>" disabled="true">
                           </div>
 
                         </div>
@@ -694,15 +794,15 @@ if(isset($_POST['conform'])){
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="profileHospitalRoom">Hospital Room:</label>
-                            <input type="text" class="form-control" name="profileHospitalRoom" disabled="true">
+                            <input type="text" class="form-control" name="profileHospitalRoom" value="<?php  echo $pCabinNo;?>,<?php  echo $pWordNo;?>,<?php  echo $pBedNo;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-6">
                             <label for="profileRemarks">Remarks: </label>
-                            <input type="text" class="form-control" name="profileRemarks" disabled="true">
+                            <input type="text" class="form-control" name="profileRemarks" value="<?php  echo $pRemarks;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="profileTotalExpenses">Total Expenses: </label>
-                            <input type="text" class="form-control" name="profileTotalExpenses" disabled="true">
+                            <input type="text" class="form-control" name="profileTotalExpenses" value="<?php  echo $pRemarks;?>" disabled="true">
                           </div>
                         </div>
 
