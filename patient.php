@@ -32,6 +32,11 @@ $sql=mysqli_query($con,"insert into patient(pName,pAge,pBloodGroup,pSex,pCareOf,
                             values('$pName','$pAge','$pBloodGroup','$pSex','$pCareOf','$pMotherName','$pPhoneNo','$pVillage','$pThana','$pUpagilla','$pDistrict','$regiNo','$pRefferedDoctor','$pCabinNo','$pWordNo','$pBedNo','$patientstatus')");
 if($sql)
 {
+
+  $pDepositMoney="0";
+  $sql=mysqli_query($con,"insert into patientadpayment(regiNo,pDepositMoney) values('$regiNo','$pDepositMoney')");
+
+
 echo "<script>alert('Status added Successfully');</script>";
 header('location:index.php');
 
@@ -303,6 +308,52 @@ header('location:index.php');
           </div>
           <!-- End of Admission Form -->
 
+<?php
+
+        $regiNo=null;
+        $pName=null;
+        $pBloodGroup=null;
+        $pPhoneNo=null;
+        $pDateTimeAdmission=null;
+        $pVillage=null;
+        $pThana=null;
+        $pUpagilla=null;
+        $pRefferedDoctor=null;
+        $pCabinNo=null;
+        $pWordNo=null;
+        $pBedNo=null;
+
+if(isset($_POST['conform'])){
+
+  $regiNo=$_POST['regiNo'];
+
+  $_SESSION['varname']=$regiNo;
+
+  $ret=mysqli_query($con,"select * from patient where regiNo='$regiNo' ");
+  $row=mysqli_fetch_array($ret);
+
+
+        $pName=$row['pName'];
+        $pBloodGroup=$row['pBloodGroup'];
+        $pPhoneNo=$row['pPhoneNo'];
+        $pDateTimeAdmission=$row['pDateTimeAdmission'];
+        $pVillage=$row['pVillage'];
+        $pThana=$row['pThana'];
+        $pUpagilla=$row['pUpagilla'];
+        $pRefferedDoctor=$row['pRefferedDoctor'];
+        $pCabinNo=$row['pCabinNo'];
+        $pWordNo=$row['pWordNo'];
+        $pBedNo=$row['pBedNo'];
+
+      }
+
+?>
+
+
+
+
+
+
           <!-- Advance Payment -->
           <div class="tab-pane fade" id="advance-payment" role="tabpanel" aria-labelledby="advance-payment-tab">
 
@@ -315,10 +366,10 @@ header('location:index.php');
                     <div class="col-xl-6 col-12 mb-4 mb-xl-0">
                       <h5 class="text-center mb-3">Payment History</h5>
 
-                      <form class="form-inline mb-2">
-                        <input class="form-control rounded-0 col-lg-9" type="search"
+                      <form class="form-inline mb-2" method="post">
+                        <input class="form-control rounded-0 col-lg-9" type="search" name="regiNo"
                           placeholder="Search by Registration ID " aria-label="Search">
-                        <button class="btn btn-primary my-0 my-sm-0 rounded-0 col-lg-3" name="submit" type="submit">Search</button>
+                        <button class="btn btn-primary my-0 my-sm-0 rounded-0 col-lg-3" name="conform" type="conform">Search</button>
                       </form>
 
                       <h5 class="text-center mt-4 mb-1">Payments Previously Made</h5>
@@ -329,43 +380,81 @@ header('location:index.php');
                             <th>Name</th>
                             <th>Money</th>
                             <th>Date of Payment</th>
-                            <th>Time</th>
                           </tr>
                         </thead>
-                        <tbody>
+
+
+<?php
+  $totalDeposite=0;
+  $pDepositMoney1=0;
+  $pAdPaymentDate1=0;
+  if($regiNo!=null){
+  $ret1=mysqli_query($con,"select * from patientadpayment where regiNo='$regiNo'");
+  while ($rows=mysqli_fetch_array($ret1)) {
+
+    $totalDeposite+=$rows['pDepositMoney'];
+    $pDepositMoney1=$rows['pDepositMoney'];
+    $pAdPaymentDate1=$rows['pAdPaymentDate'];
+  }
+?>  
+
+                        <tbody>                     
                           <tr>
-                            <th>1</th>
-                            <td>John</td>
-                            <td>2000</td>
-                            <td>25/05/2020</td>
-                            <td>3:40</td>
+                            <th><?php  echo $regiNo;?></th>
+                            <td><?php  echo $pName;?></td>
+                            <td><?php  echo $pDepositMoney1;?></td>
+                            <td><?php  echo $pAdPaymentDate1;?></td>
                           </tr>
                         </tbody>
+<?php
+
+}
+?>
                       </table>
 
                       <h5 class="text-center mt-4 mb-2">Deposit Payment</h5>
-                      <form>
+
+<script type="text/javascript">
+  function hello(){
+  var xx=eval(form1.pDepositMoney.value);
+  var yy=eval(form1.rPrePayment.value);
+  form1.rTotalAdvance.value=xx+yy
+}
+</script>
+
+
+<?php
+  $regiNo=$_SESSION['varname'];
+
+  if(isset($_POST['confirm'])){
+    $pDepositMoney=$_POST['pDepositMoney'];
+    $sql1=mysqli_query($con,"insert into patientadpayment(regiNo,pDepositMoney) values('$regiNo','$pDepositMoney')");
+  }
+?>
+
+                      <form name="form1" method="post">
                         <div class="form-row">
                           <div class="form-group col-md-6">
                             <label for="pDepositMoney">Deposit Money:</label>
-                            <input type="text" class="form-control" name="pDepositMoney" placeholder="Amount of Money">
+                            <input type="text" class="form-control" name="pDepositMoney" value="" placeholder="Amount of Money" onBlur="hello()">
                           </div>
                           <div class="form-group col-md-6">
                             <label for="pPrePayment">Previous Payment:</label>
-                            <input type="text" class="form-control" id="rPrePayment" disabled="true">
+                            <input type="text" class="form-control" id="rPrePayment" value="<?php  echo $totalDeposite;?>" onBlur="hello()" disabled="true">
                           </div>
                         </div>
 
                         <div class="form-row">
                           <div class="form-group col-lg-6 col-md-6">
                             <label for="pTotalAdvance">Total Advance Payment:</label>
-                            <input type="text" class="form-control" id="rTotalAdvance" disabled="true">
+                            <input type="text" class="form-control" id="rTotalAdvance" value="" disabled="true">
                           </div>
                           <div class="form-group mt-4 col-lg-6 col-md-6">
-                            <button class="btn btn-success btn-lg rounded-0 col-lg-12" type="submit">Deposit</button>
+                            <button class="btn btn-success btn-lg rounded-0 col-lg-12" type="confirm" name="confirm">Deposit</button>
                           </div>
 
                         </div>
+                        
                       </form>
                     </div>
                     <!-- End of Payment History -->
@@ -379,37 +468,37 @@ header('location:index.php');
                         <div class="form-row">
                           <div class="form-group col-md-6">
                             <label for="pName">Patient Name: </label>
-                            <input type="text" class="form-control" id="sName" disabled="true">
+                            <input type="text" class="form-control" id="sName" value="<?php  echo $pName;?> " disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="pBloodGroup">Blood Group: </label>
-                            <input type="text" class="form-control" id="sBloodGroup" disabled="true">
+                            <input type="text" class="form-control" id="sBloodGroup" value="<?php  echo $pBloodGroup;?> " disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="pPhone">Phone: </label>
-                            <input type="text" class="form-control" id="sPhone" disabled="true">
+                            <input type="text" class="form-control" id="sPhone" value="<?php  echo $pPhoneNo;?> " disabled="true">
                           </div>
                         </div>
 
                         <div class="form-row">
                           <div class="form-group col-md-4">
                             <label for="pDOA">Date Of Admission: </label>
-                            <input type="text" class="form-control" id="sDateOfAdmission" disabled="true">
+                            <input type="text" class="form-control" id="sDateOfAdmission" value="<?php  echo $pDateTimeAdmission;?> " disabled="true">
                           </div>
                           <div class="form-group col-md-8">
                             <label for="pAddress">Address: </label>
-                            <input type="text" class="form-control" id="sAddress" disabled="true">
+                            <input type="text" class="form-control" id="sAddress" value="<?php  echo $pVillage;?>, <?php  echo $pThana;?>, <?php  echo $pUpagilla;?> " disabled="true">
                           </div>
                         </div>
 
                         <div class="form-row">
                           <div class="form-group col-md-6">
                             <label for="pRefferedDoctor">Reffered Doctor: </label>
-                            <input type="text" class="form-control" id="sRefferedDoctor" disabled="true">
+                            <input type="text" class="form-control" id="sRefferedDoctor" value="<?php  echo $pRefferedDoctor;?> " disabled="true">
                           </div>
                           <div class="form-group col-md-6">
                             <label for="pHospitalRoom">Hospital Room: </label>
-                            <input type="text" class="form-control" id="sHospitalRoom" disabled="true">
+                            <input type="text" class="form-control" id="sHospitalRoom" value="<?php  echo $pCabinNo;?>, <?php  echo $pWordNo;?>, <?php  echo $pBedNo;?> " disabled="true">
                           </div>
                         </div>
                       </form>
@@ -423,18 +512,27 @@ header('location:index.php');
                             <th>Name</th>
                             <th>Money</th>
                             <th>Date of Payment</th>
-                            <th>Time</th>
                           </tr>
                         </thead>
+  <?php
+  if($regiNo!=null){
+  $ret1=mysqli_query($con,"select * from patientadpayment where regiNo='$regiNo'");
+  while ($row=mysqli_fetch_array($ret1)) {
+
+?> 
+
                         <tbody>
                           <tr>
-                            <th>1</th>
-                            <td>John</td>
-                            <td>2000</td>
-                            <td>25/05/2020</td>
-                            <td>3:40</td>
+                            <th><?php  echo $regiNo;?></th>
+                            <td><?php  echo $pName;?></td>
+                            <td><?php  echo $row['pDepositMoney'];?></td>
+                            <td><?php  echo $row['pAdPaymentDate'];?></td>
                           </tr>
                         </tbody>
+<?php
+  }
+}
+?>
                       </table>
                     </div>
                     <!-- End of Patient Information Section -->
