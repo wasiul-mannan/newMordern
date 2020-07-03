@@ -279,11 +279,11 @@ header('location:index.php');
                   </div>
                   <div class="form-group col-md-3">
                     <label for="pAdmiteDate">Date Of Admission: </label>
-                    <input type="text" class="form-control" name="pAdmiteDate">
+                    <input type="text" class="form-control"  value="<?php date_default_timezone_set("Asia/Dhaka"); echo date("d - m - Y "); ?>" disabled="true">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="pAdmiteTime">Time Of Admission: </label>
-                    <input type="text" class="form-control" name="pAdmiteTime">
+                    <input type="text" class="form-control" value="<?php date_default_timezone_set("Asia/Dhaka"); echo date("h : i : sa "); ?>" disabled="true">
                   </div>
                 </div>
 
@@ -550,9 +550,17 @@ if(isset($_POST['conform'])){
                             <th>Name</th>
                             <th>Money</th>
                             <th>Date of Payment</th>
+                            <th>Action</th>
                           </tr>
                         </thead>
   <?php
+if(isset($_GET['del']))
+{
+        mysqli_query($con,"delete from patientadpayment where id = '".$_GET['id']."'");
+        $_SESSION['msg']="data deleted !!";
+}
+
+
   if($regiNo!=null){
   $ret1=mysqli_query($con,"select * from patientadpayment where regiNo='$regiNo'");
   while ($row=mysqli_fetch_array($ret1)) {
@@ -565,6 +573,7 @@ if(isset($_POST['conform'])){
                             <td><?php  echo $pName;?></td>
                             <td><?php  echo $row['pDepositMoney'];?></td>
                             <td><?php  echo $row['pAdPaymentDate'];?></td>
+                            <td><a href="patient.php?id=<?php echo $row['id']?>&del=delete" onClick="return confirm('Are you sure you want to delete?')"class="btn btn-transparent btn-xs tooltips" tooltip-placement="top" tooltip="Remove"><i class="btn btn-danger btn-sm">Delete</i></a></td>
                           </tr>
                         </tbody>
 <?php

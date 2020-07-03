@@ -1,3 +1,59 @@
+<?php
+session_start();
+//error_reporting(0);
+include('include/config.php');
+//include('include/checklogin.php');
+//check_login();
+
+if(isset($_POST['submit']))
+{	
+
+
+$hosCabinName=$_POST['hosCabinName'];
+$hosLocation=$_POST['hosLocation'];
+$hosCabinClass=$_POST['hosCabinClass'];
+$hosCabinStatus="Free";
+
+$sql=mysqli_query($con,"insert into cabin(hosCabinName,hosLocation,hosCabinClass,hosCabinStatus) 
+                                    values('$hosCabinName','$hosLocation','$hosCabinClass','$hosCabinStatus')");
+if($sql)
+{
+echo "<script>alert('Status added Successfully');</script>";
+header('location:cabinwordDetails.php');
+
+}
+}
+
+
+if(isset($_POST['confirm']))
+{	
+
+
+$hosWordName=$_POST['hosWordName'];
+$hosWordBed=$_POST['hosWordBed'];
+$hosWordLocation=$_POST['hosWordLocation'];
+$hosWordClass=$_POST['hosWordClass'];
+$hosWordStatus="Free";
+
+$sql=mysqli_query($con,"insert into word(hosWordName,hosWordBed,hosWordLocation,hosWordClass,hosWordStatus) 
+                                    values('$hosWordName','$hosWordBed','$hosWordLocation','$hosWordClass','$hosWordStatus')");
+if($sql)
+{
+echo "<script>alert('Status added Successfully');</script>";
+header('location:cabinwordDetails.php');
+
+}
+}
+?>
+
+
+
+
+
+
+
+
+
 <!doctype html>
 <html lang="en">
 
@@ -91,15 +147,15 @@
               <div class="row">
                 <div class="col-xl-6">
                   <h4 class="text-center mb-3">Cabin Section</h4>
-                  <form>
+                  <form method="post">
                     <div class="form-row">
                       <div class="form-group col-6">
                         <label for="hosCabinName">Cabin Name:</label>
-                        <input type="number" class="form-control" name="hosCabinName" placeholder="Enter cabin name">
+                        <input type="text" class="form-control" name="hosCabinName" placeholder="Enter cabin name">
                       </div>
                       <div class="form-group col-6">
                         <label for="hosLocation">Location:</label>
-                        <select class="form-control" id="hosLocation">
+                        <select class="form-control" id="hosLocation" name="hosLocation">
                           <option>Select...</option>
                           <option>1st Floor</option>
                           <option>2nd Floor</option>
@@ -110,7 +166,7 @@
                     <div class="form-row">
                       <div class="form-group col-6">
                         <label for="hosCabinClass">Class:</label>
-                        <select class="form-control" id="hosCabinClass">
+                        <select class="form-control" id="hosCabinClass" name="hosCabinClass">
                           <option>Select...</option>
                           <option>1st Class</option>
                           <option>2nd Class</option>
@@ -120,7 +176,7 @@
                     </div>
                     <div class="form-row justify-content-center">
                       <div class="form-group mt-3">
-                        <button class="btn btn-info btn-lg rounded-0 col-lg-12" type="submit">Add Cabin</button>
+                        <button class="btn btn-info btn-lg rounded-0 col-lg-12" type="submit" name="submit">Add Cabin</button>
                       </div>
                     </div>
                   </form>
@@ -128,15 +184,15 @@
 
                 <div class="col-xl-6">
                   <h4 class="text-center mb-3">Word Sectionn</h4>
-                  <form>
+                  <form method="post">
                     <div class="form-row">
                       <div class="form-group col-6">
                         <label for="hosWordName">Word Name:</label>
-                        <input type="number" class="form-control" name="hosWordName" placeholder="Enter word name">
+                        <input type="text" class="form-control" name="hosWordName" placeholder="Enter word name">
                       </div>
                       <div class="form-group col-6">
                         <label for="hosWordBed">Bed:</label>
-                        <select class="form-control" id="hosWordBed">
+                        <select class="form-control" id="hosWordBed" name="hosWordBed">
                           <option>Select...</option>
                           <option>Bed-1</option>
                           <option>Bed-2</option>
@@ -146,7 +202,7 @@
                     <div class="form-row">
                       <div class="form-group col-6">
                         <label for="hosWordLocation">Location:</label>
-                        <select class="form-control" id="hosWordLocation">
+                        <select class="form-control" id="hosWordLocation" name="hosWordLocation">
                           <option>Select...</option>
                           <option>1st Floor</option>
                           <option>2nd Floor</option>
@@ -155,7 +211,7 @@
                       </div>
                       <div class="form-group col-6">
                         <label for="hosWordClass">Class:</label>
-                        <select class="form-control" id="hosWprdClass">
+                        <select class="form-control" id="hosWordClass" name="hosWordClass">
                           <option>Select...</option>
                           <option>General</option>
                           <option>Economic</option>
@@ -164,7 +220,7 @@
                     </div>
                     <div class="form-row justify-content-center">
                       <div class="form-group mt-3">
-                        <button class="btn btn-info btn-lg rounded-0 col-lg-12" type="submit">Add Word</button>
+                        <button class="btn btn-info btn-lg rounded-0 col-lg-12" type="confirm" name="confirm">Add Word</button>
                       </div>
                     </div>
                   </form>
@@ -197,34 +253,28 @@
                   </tr>
                 </thead>
                 <tbody>
+<?php
+
+if(isset($_GET['delet']))
+{
+        mysqli_query($con,"delete from cabin where id = '".$_GET['id']."'");
+        $_SESSION['msg']="data deleted !!";
+}
+
+$ret=mysqli_query($con,"select * from cabin ");
+while ($row=mysqli_fetch_array($ret)) {
+?>
                   <tr>
-                    <th>CAB-A1</th>
-                    <td>3rd Floor</td>
-                    <td>1st Class</td>
-                    <td>Free</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
+                    <th><?php  echo $row['hosCabinName'];?></th>
+                    <td><?php  echo $row['hosLocation'];?></td>
+                    <td><?php  echo $row['hosCabinClass'];?></td>
+                    <td><?php  echo $row['hosCabinStatus'];?></td>
+                    <td><a href="cabinwordDetails.php?id=<?php echo $row['id']?>&delet=delete" onClick="return confirm('Are you sure you want to delete?')"class="btn btn-transparent btn-xs tooltips" tooltip-placement="top" tooltip="Remove"><i class="btn btn-danger btn-sm">Delete</i></a></td>
                   </tr>
-                  <tr>
-                    <th>CAB-A2</th>
-                    <td>3rd Floor</td>
-                    <td>1st Class</td>
-                    <td>Free</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                  </tr>
-                  <tr>
-                    <th>CAB-B1</th>
-                    <td>3rd Floor</td>
-                    <td>1st Class</td>
-                    <td>Free</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                  </tr>
-                  <tr>
-                    <th>CAB-B2</th>
-                    <td>3rd Floor</td>
-                    <td>1st Class</td>
-                    <td>Free</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                  </tr>
+<?php
+}
+
+?>
                 </tbody>
               </table>
             </div>
@@ -242,46 +292,28 @@
                   </tr>
                 </thead>
                 <tbody>
+<?php
+
+if(isset($_GET['del']))
+{
+        mysqli_query($con,"delete from word where id = '".$_GET['id']."'");
+        $_SESSION['msg']="data deleted !!";
+}
+
+$ret=mysqli_query($con,"select * from word ");
+while ($row=mysqli_fetch_array($ret)) {
+?>
                   <tr>
-                    <th>Genral-1</th>
-                    <th>CAB-A1</th>
-                    <td>Bed-1</td>
-                    <td>Genral</td>
-                    <td>Free</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
+                    <th><?php  echo $row['hosWordName'];?></th>
+                    <td><?php  echo $row['hosWordBed'];?></td>
+                    <td><?php  echo $row['hosWordLocation'];?></td>
+                    <td><?php  echo $row['hosWordClass'];?></td>
+                    <td><?php  echo $row['hosWordStatus'];?></td>
+                    <td><a href="cabinwordDetails.php?id=<?php echo $row['id']?>&del=delete" onClick="return confirm('Are you sure you want to delete?')"class="btn btn-transparent btn-xs tooltips" tooltip-placement="top" tooltip="Remove"><i class="btn btn-danger btn-sm">Delete</i></a></td>
                   </tr>
-                  <tr>
-                    <th>Genral-1</th>
-                    <th>Bed-1</th>
-                    <td>3rd Floor</td>
-                    <td>Genral</td>
-                    <td>Free</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                  </tr>
-                  <tr>
-                    <th>Medicine</th>
-                    <th>Bed-1</th>
-                    <td>3rd Floor</td>
-                    <td>Economy</td>
-                    <td>Free</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                  </tr>
-                  <tr>
-                    <th>Medicine</th>
-                    <th>Bed-2</th>
-                    <td>3rd Floor</td>
-                    <td>Economy</td>
-                    <td>Free</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                  </tr>
-                  <tr>
-                    <th>Medicine</th>
-                    <th>Bed-3</th>
-                    <td>3rd Floor</td>
-                    <td>Economy</td>
-                    <td>Free</td>
-                    <td><button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-                  </tr>
+<?php
+}
+?>
                 </tbody>
               </table>
             </div>

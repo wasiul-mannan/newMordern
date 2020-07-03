@@ -2,8 +2,8 @@
             <a href="" class="navbar-brand text-white d-block mx-auto text-center py-3 mb-4 bottom-border">Modern
               Hospital</a>
             <div class="bottom-border pb-3">
-              <img src="images/admin.jpeg" width="50" class="rounded-circle mr-3" alt="Admin Image">
-              <a href="#" class="text-white">Helen Smith</a>
+              <img src="images/admin.jpg" width="50" class="rounded-circle mr-3" alt="Admin Image">
+              <a href="index.php" class="text-white">Mordern General Hospital</a>
             </div>
             <ul class="navbar-nav flex-column">
               <li class="nav-link"><a href="index.php" id="sidebar" class="nav-link text-white p-1 current"><i
