@@ -1,3 +1,61 @@
+<?php
+session_start();
+//error_reporting(0);
+include('include/config.php');
+//include('include/checklogin.php');
+//check_login();
+
+if(isset($_POST['submit']))
+{	
+
+
+        $d_name=$_POST['d_name'];
+        $d_blood=$_POST['d_blood'];
+        $d_date_of_birth=$_POST['d_date_of_birth'];
+        $d_gender=$_POST['d_gender'];
+        $d_father_name=$_POST['d_father_name'];
+        $d_mother_name=$_POST['d_mother_name'];
+        $d_phone_number=$_POST['d_phone_number'];
+        $dRegistrationid=$_POST['dRegistrationid'];
+        $d_nid_no=$_POST['d_nid_no'];
+        $d_specialty=$_POST['d_specialty'];
+        $d_licence_no=$_POST['d_licence_no'];
+        $dPractiseRoom=$_POST['dPractiseRoom'];
+        $dCategory=$_POST['dCategory'];
+        $d_remarks=$_POST['d_remarks'];
+        $d_joining_date=$_POST['d_joining_date'];
+        $dVillage=$_POST['dVillage'];
+        $dPostOffice=$_POST['dPostOffice'];
+        $dThana=$_POST['dThana'];
+        $dUpagilla=$_POST['dUpagilla'];
+        $dDistrict=$_POST['dDistrict'];
+        $dStatus="Active";
+        
+
+$sql=mysqli_query($con,"insert into doctor(d_name,d_blood,d_date_of_birth,d_gender,d_father_name,d_mother_name,d_phone_number,dRegistrationid,d_nid_no,d_specialty,d_licence_no,dPractiseRoom,dCategory,d_remarks,d_joining_date,dVillage,dPostOffice,dThana,dUpagilla,dDistrict,dStatus) 
+                            values('$d_name','$d_blood','$d_date_of_birth','$d_gender','$d_father_name','$d_mother_name','$d_phone_number','$dRegistrationid','$d_nid_no','$d_licence_no','$pDistrict','$dPractiseRoom','$dCategory','$d_remarks','$d_joining_date','$dVillage','$dPostOffice','$dThana','$dUpagilla','$dDistrict','$dStatus')");
+if($sql)
+{
+
+echo "<script>alert('Status added Successfully');</script>";
+header('location:doctor.php');
+
+}
+}
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!doctype html>
 <html lang="en">
 
@@ -385,15 +443,15 @@
             <div class="mx-3 my-3">
               <h4 class="text-center">Registration Form</h4>
               <hr>
-              <form>
+              <form method="post">
                 <div class="form-row">
                   <div class="form-group col-4">
-                    <label for="docName">Doctor Name: </label>
-                    <input type="text" class="form-control" name="docName" placeholder="Enter name">
+                    <label for="d_name">Doctor Name: </label>
+                    <input type="text" class="form-control" name="d_name" placeholder="Enter name">
                   </div>
                   <div class="form-group col-2">
-                    <label for="docBloodGroup">Blood Group:</label>
-                    <select class="form-control" id="docBloodGroup">
+                    <label for="d_blood">Blood Group:</label>
+                    <select class="form-control" id="d_blood" name="d_blood">
                       <option>Choose...</option>
                       <option>A+</option>
                       <option>O+</option>
@@ -406,22 +464,22 @@
                     </select>
                   </div>
                   <div class="form-group col-2">
-                    <label for="docDOB">Date of Birth: </label>
-                    <input type="text" class="form-control" name="docDOB" placeholder="Enter (D-M-Y)">
+                    <label for="d_date_of_birth">Date of Birth: </label>
+                    <input type="text" class="form-control" name="d_date_of_birth" value="<?php date_default_timezone_set("Asia/Dhaka"); echo date("d - m - Y "); ?>">
                   </div>
                   <div class="form-group col-4">
-                    <label for="docGender">Gender: </label>
+                    <label for="d_gender">Gender: </label>
                     <br>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="docGender" id="inlineRadio1" value="Male">
+                      <input class="form-check-input" type="radio" name="d_gender" id="inlineRadio1" value="Male">
                       <label class="form-check-label" for="inlineRadio1">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="docGender" id="inlineRadio2" value="Female">
+                      <input class="form-check-input" type="radio" name="d_gender" id="inlineRadio2" value="Female">
                       <label class="form-check-label" for="inlineRadio2">Female</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="docGender" id="inlineRadio3" value="Others">
+                      <input class="form-check-input" type="radio" name="d_gender" id="inlineRadio3" value="Others">
                       <label class="form-check-label" for="inlineRadio3">Others</label>
                     </div>
                   </div>
@@ -430,16 +488,16 @@
 
                 <div class="form-row">
                   <div class="form-group col-md-4">
-                    <label for="docFatherName">Father's Name: </label>
-                    <input type="text" class="form-control" name="docFatherName" placeholder="Enter father name">
+                    <label for="d_father_name">Father's Name: </label>
+                    <input type="text" class="form-control" name="d_father_name" placeholder="Enter father name">
                   </div>
                   <div class="form-group col-md-4">
-                    <label for="docMotherName">Mother's Name: </label>
-                    <input type="text" class="form-control" name="docMotherName" placeholder="Enter mother name">
+                    <label for="d_mother_name">Mother's Name: </label>
+                    <input type="text" class="form-control" name="d_mother_name" placeholder="Enter mother name">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docPhoneNo">Phone Number: </label>
-                    <input type="text" class="form-control" name="docPhoneNo" placeholder="Enter phone no">
+                    <input type="text" class="form-control" name="d_phone_number" placeholder="Enter phone no">
                   </div>
                 </div>
 
@@ -448,16 +506,15 @@
                 <div class="form-row">
                   <div class="form-group col-md-4">
                     <label for="docRegistrationID">Doctor Registration ID: </label>
-                    <input type="text" class="form-control" name="docRegistrationID"
-                      placeholder="Enter doctor registration id">
+                    <input type="text" class="form-control" name="dRegistrationid" placeholder="Enter doctor registration id">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docNID">Doctor NID: </label>
-                    <input type="text" class="form-control" name="docNID" placeholder="Enter nid no">
+                    <input type="text" class="form-control" name="d_nid_no" placeholder="Enter nid no">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docSpeciality">Doctor Speciality:</label>
-                    <select class="form-control" id="docSpeciality">
+                    <select class="form-control" id="d_specialty">
                       <option>Choose...</option>
                       <option>Neurologists</option>
                       <option>Cardiologists</option>
@@ -470,15 +527,15 @@
                 <div class="form-row">
                   <div class="form-group col-md-4">
                     <label for="docLicence">Licence No: </label>
-                    <input type="text" class="form-control" name="docLicence" placeholder="Enter licence no">
+                    <input type="text" class="form-control" name="docLicd_licence_noence" placeholder="Enter licence no">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docPracticeRoom">Practice Room No: </label>
-                    <input type="text" class="form-control" name="docPracticeRoom" placeholder="Enter practice room no">
+                    <input type="text" class="form-control" name="dPractiseRoom" placeholder="Enter practice room no">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docCategory">Doctor Category:</label>
-                    <select class="form-control" id="docCategory">
+                    <select class="form-control" id="docCategory" name="dCategory">
                       <option>Choose...</option>
                       <option>Permanent</option>
                       <option>Visiting</option>
@@ -490,11 +547,11 @@
                 <div class="form-row">
                   <div class="form-group col-md-8">
                     <label for="docRemarks">Remarks:</label>
-                    <textarea class="form-control" id="docRemarks" placeholder="Enter degree / details"></textarea>
+                    <textarea class="form-control" id="d_remarks" placeholder="Enter degree / details"></textarea>
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docJoining">Joining Date: </label>
-                    <input type="text" class="form-control" name="docJoining" placeholder="Enter joining date">
+                    <input type="text" class="form-control" name="d_joining_date" value="<?php date_default_timezone_set("Asia/Dhaka"); echo date("d - m - Y "); ?>">
                   </div>
                 </div>
 
@@ -503,33 +560,32 @@
                 <div class="form-row">
                   <div class="form-group col-md-4">
                     <label for="docVillage">Village: </label>
-                    <input type="text" class="form-control" name="docVillage" placeholder="Enter village">
+                    <input type="text" class="form-control" name="dVillage" placeholder="Enter village">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docPostOffice">Post Office: </label>
-                    <input type="text" class="form-control" name="docPostOffice" placeholder="Enter post office">
+                    <input type="text" class="form-control" name="dPostOffice" placeholder="Enter post office">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docThana">Thana: </label>
-                    <input type="text" class="form-control" name="docThana" placeholder="Enter thana">
+                    <input type="text" class="form-control" name="dThana" placeholder="Enter thana">
                   </div>
                 </div>
 
                 <div class="form-row">
                   <div class="form-group col-md-4">
                     <label for="docUpagilla">Upazilla: </label>
-                    <input type="text" class="form-control" name="docUpagilla" placeholder="Enter upazilla">
+                    <input type="text" class="form-control" name="dUpagilla" placeholder="Enter upazilla">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docDistrict">District: </label>
-                    <input type="text" class="form-control" name="docDistrict" placeholder="Enter district">
+                    <input type="text" class="form-control" name="dDistrict" placeholder="Enter district">
                   </div>
                 </div>
 
                 <hr>
 
-                <button type="Submit" name="Submit"
-                  class="btn btn-primary mb-3 btn-lg doc-admission-btn">Register</button>
+                <button type="submit" name="submit" class="btn btn-primary mb-3 btn-lg doc-admission-btn">Register</button>
 
               </form>
 
