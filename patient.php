@@ -360,6 +360,7 @@ header('location:index.php');
         $pCabinNo=null;
         $pWordNo=null;
         $pBedNo=null;
+        
 
 if(isset($_POST['conform'])){
 

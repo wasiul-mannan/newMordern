@@ -33,7 +33,7 @@ if(isset($_POST['submit']))
         
 
 $sql=mysqli_query($con,"insert into doctor(d_name,d_blood,d_date_of_birth,d_gender,d_father_name,d_mother_name,d_phone_number,dRegistrationid,d_nid_no,d_specialty,d_licence_no,dPractiseRoom,dCategory,d_remarks,d_joining_date,dVillage,dPostOffice,dThana,dUpagilla,dDistrict,dStatus) 
-                            values('$d_name','$d_blood','$d_date_of_birth','$d_gender','$d_father_name','$d_mother_name','$d_phone_number','$dRegistrationid','$d_nid_no','$d_licence_no','$pDistrict','$dPractiseRoom','$dCategory','$d_remarks','$d_joining_date','$dVillage','$dPostOffice','$dThana','$dUpagilla','$dDistrict','$dStatus')");
+                            values('$d_name','$d_blood','$d_date_of_birth','$d_gender','$d_father_name','$d_mother_name','$d_phone_number','$dRegistrationid','$d_nid_no','$d_specialty','$d_licence_no','$dPractiseRoom','$dCategory','$d_remarks','$d_joining_date','$dVillage','$dPostOffice','$dThana','$dUpagilla','$dDistrict','$dStatus')");
 if($sql)
 {
 
@@ -180,25 +180,32 @@ header('location:doctor.php');
               <div class="row">
                 <!-- <div class="col-xl-12 mb-3 align-items-center"> -->
 
+<?php
+if(isset($_GET['del']))
+{
+        mysqli_query($con,"update doctor set dStatus='Inactive' where id = '".$_GET['id']."'");
+        $_SESSION['msg']="data deleted !!";
+}
+
+
+if(isset($_POST['set']))
+{	
+  $dRegistrationid=$_POST['dRegistrationid'];
+
+  $ret1=mysqli_query($con,"select * from doctor where dStatus='Active' and dRegistrationid='$dRegistrationid' or d_name='$dRegistrationid'");
+}else{
+  $ret1=mysqli_query($con,"select * from doctor where dStatus='Active'");
+}
+?>
+
                 <div class="col-xl-6 mb-3 align-items-center">
-                  <form class="form-inline mb-2">
-                    <input class="form-control rounded-0" type="search" placeholder="Enter DocID / Name "
+                  <form class="form-inline mb-2" method="post">
+                    <input class="form-control rounded-0" type="search" name="dRegistrationid" placeholder="Enter DocID / Name "
                       aria-label="Search">
-                    <button class="btn btn-primary my-0 my-sm-0 mr-4 rounded-0" type="submit">Search</button>
+                    <button class="btn btn-primary my-0 my-sm-0 mr-4 rounded-0" type="set" name="set">Search</button>
                   </form>
                 </div>
-                <div class="col-xl-6 mb-3 align-items-center">
-                  <form class="form-inline mb-2">
-                    <h5 class="text-center ml-md-auto pr-2">Search By:</h5>
-                    <select class="form-control col-xl-6" id="docSpeciality">
-                      <option>Choose...</option>
-                      <option>Neurologists</option>
-                      <option>Cardiologists</option>
-                      <option>Permanent</option>
-                      <option>Visiting</option>
-                    </select>
-                  </form>
-                </div>
+                
                 <!-- </div> -->
               </div>
 
@@ -214,32 +221,46 @@ header('location:doctor.php');
                     <th>Practice Room</th>
                     <th>Category</th>
                     <th>Address</th>
+                    <th>Action</th>
                     <!--Combination of Village and District-->
                   </tr>
                 </thead>
                 <tbody>
+<?php
+
+  $cnt=1;
+
+  
+  while ($rows=mysqli_fetch_array($ret1)) {
+
+    $dRegistrationid=$rows['dRegistrationid'];
+    $d_name=$rows['d_name'];
+    $d_gender=$rows['d_gender'];
+    $d_phone_number=$rows['d_phone_number'];
+    $d_specialty=$rows['d_specialty'];
+    $dPractiseRoom=$rows['dPractiseRoom'];
+    $dCategory=$rows['dCategory'];
+    $dVillage=$rows['dVillage'];
+    $dThana=$rows['dThana'];
+    $dUpagilla=$rows['dUpagilla'];
+?>                  
                   <tr>
-                    <th>1</th>
-                    <td>DOC-001</td>
-                    <td>Robiul</td>
-                    <td>Male</td>
-                    <td>01711-363636</td>
-                    <td>Cardiologist</td>
-                    <td>Floor-3, Room-308</td>
-                    <td>Visiting</td>
-                    <td>NewYork, USA</td>
+                    <th><?php  echo $cnt;?></th>
+                    <td><?php  echo $dRegistrationid;?></td>
+                    <td><?php  echo $d_name;?></td>
+                    <td><?php  echo $d_gender;?></td>
+                    <td><?php  echo $d_phone_number;?></td>
+                    <td><?php  echo $d_specialty;?></td>
+                    <td><?php  echo $dPractiseRoom;?></td>
+                    <td><?php  echo $dCategory;?></td>
+                    <td><?php  echo $dVillage;?>, <?php  echo $dThana;?>, <?php  echo $dUpagilla;?></td>
+                    <td><a href="doctor.php?id=<?php echo $rows['id']?>&del=delete" onClick="return confirm('Are you sure you want to delete?')"class="btn btn-transparent btn-xs tooltips" tooltip-placement="top" tooltip="Remove"><i class="btn btn-danger btn-sm">Delete</i></a></td>
                   </tr>
-                  <tr>
-                    <th>2</th>
-                    <td>DOC-002</td>
-                    <td>Muniat</td>
-                    <td>Female</td>
-                    <td>01711-363636</td>
-                    <td>Cardiologist</td>
-                    <td>Floor-3, Room-308</td>
-                    <td>Visiting</td>
-                    <td>NewYork, USA</td>
-                  </tr>
+<?php
+$cnt=1+$cnt;
+  }
+
+  ?>
                 </tbody>
               </table>
             </div>
@@ -247,6 +268,62 @@ header('location:doctor.php');
           <!-- End of list-of-doctors Tab -->
 
           <!-- Doctor Profile Tab -->
+
+          <?php
+
+$dRegistrationid=null;
+$d_name=null;
+$d_gender=null;
+$d_date_of_birth=null;
+$d_blood=null;
+$d_phone_number=null;
+$d_father_name=null;
+$d_mother_name=null;
+$dVillage=null;
+$dThana=null;
+$dUpagilla=null;
+$d_licence_no=null;
+$d_nid_no=null;
+$d_specialty=null;
+$d_joining_date=null;
+$dPractiseRoom=null;
+$dCategory=null;
+$d_remarks=null;
+
+if(isset($_POST['confirm'])){
+
+$dRegistrationid=$_POST['dRegistrationid'];
+
+$_SESSION['varname']=$dRegistrationid;
+
+$ret=mysqli_query($con,"select * from doctor where dRegistrationid='$dRegistrationid' ");
+$row=mysqli_fetch_array($ret);
+
+
+$d_name=$row['d_name'];
+$d_gender=$row['d_gender'];
+$d_date_of_birth=$row['d_date_of_birth'];
+$d_blood=$row['d_blood'];
+$d_phone_number=$row['d_phone_number'];
+$d_father_name=$row['d_father_name'];
+$d_mother_name=$row['d_mother_name'];
+$dVillage=$row['dVillage'];
+$dThana=$row['dThana'];
+$dUpagilla=$row['dUpagilla'];
+$dRegistrationid=$row['dRegistrationid'];
+$d_licence_no=$row['d_licence_no'];
+$d_nid_no=$row['d_nid_no'];
+$d_specialty=$row['d_specialty'];
+$d_joining_date=$row['d_joining_date'];
+$dPractiseRoom=$row['dPractiseRoom'];
+$dCategory=$row['dCategory'];
+$d_remarks=$row['d_remarks'];
+
+}
+
+?>
+
+
           <div class="tab-pane fade" id="doctor-profile" role="tabpanel" aria-labelledby="doctor-profile-tab">
 
             <div class="mx-1 my-3">
@@ -255,11 +332,11 @@ header('location:doctor.php');
 
                   <div class="row align-items-center">
                     <div class="col-8 mb-4 mb-xl-0">
-                      <form class="form-inline mb-2">
+                      <form class="form-inline mb-2" method="post">
                         <h6 class="text-center mt-2 col-lg-5">Doctor Registration ID:</h6>
-                        <input class="form-control rounded-0 col-lg-4" type="search" placeholder="Enter RegID "
+                        <input class="form-control rounded-0 col-lg-4" type="dRegistrationid" name="dRegistrationid" placeholder="Enter RegID "
                           aria-label="Search">
-                        <button class="btn btn-primary my-0 my-sm-0 rounded-0" type="submit">Search</button>
+                        <button class="btn btn-primary my-0 my-sm-0 rounded-0" type="confirm" name="confirm">Search</button>
                       </form>
                     </div>
                   </div>
@@ -273,40 +350,40 @@ header('location:doctor.php');
                         <div class="form-row">
                           <div class="form-group col-3">
                             <label for="proDocName">Doctor Name: </label>
-                            <input type="text" class="form-control" name="proDocName" disabled="true">
+                            <input type="text" class="form-control" name="proDocName" value="<?php  echo $d_name;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="proDocGender">Gender: </label>
-                            <input type="text" class="form-control" name="proDocGender" disabled="true">
+                            <input type="text" class="form-control" name="proDocGender" value="<?php  echo $d_gender;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="proDocDOB">Date of Birth: </label>
-                            <input type="text" class="form-control" name="proDocDOB" disabled="true">
+                            <input type="text" class="form-control" name="proDocDOB" value="<?php  echo $d_date_of_birth;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="proDocBloodGroup">Blood Group: </label>
-                            <input type="text" class="form-control" name="proDocBloodGroup" disabled="true">
+                            <input type="text" class="form-control" name="proDocBloodGroup" value="<?php  echo $d_blood;?>" disabled="true">
                           </div>
                           <div class="form-group col-3">
                             <label for="proDocPhoneNo">Phone Number: </label>
-                            <input type="text" class="form-control" name="proDocPhoneNo" disabled="true">
+                            <input type="text" class="form-control" name="proDocPhoneNo" value="<?php  echo $d_phone_number;?>" disabled="true">
                           </div>
                         </div>
 
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="proDocFatherName">Father's Name: </label>
-                            <input type="text" class="form-control" name="proDocFatherName" disabled="true">
+                            <input type="text" class="form-control" name="proDocFatherName" value="<?php  echo $d_father_name;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proDocMotherName">Mother's Name: </label>
-                            <input type="text" class="form-control" name="proDocMotherName" disabled="true">
+                            <input type="text" class="form-control" name="proDocMotherName" value="<?php  echo $d_mother_name;?>" disabled="true">
                           </div>
 
                           <!-- Address is the combination of Village, PostOffice and District -->
                           <div class="form-group col-md-6">
                             <label for="proDocAddress">Address: </label>
-                            <input type="text" class="form-control" name="proDocAddress" disabled="true">
+                            <input type="text" class="form-control" name="proDocAddress" value="<?php  echo $dVillage;?>,<?php  echo $dThana;?>,<?php  echo $dUpagilla;?>" disabled="true">
                           </div>
                         </div>
 
@@ -315,40 +392,40 @@ header('location:doctor.php');
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="proDocRegID">Registration ID: </label>
-                            <input type="text" class="form-control" name="proDocRegID" disabled="true">
+                            <input type="text" class="form-control" name="proDocRegID" value="<?php  echo $dRegistrationid;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
-                            <label for="proDocLicence">Licence No: </label>
-                            <input type="text" class="form-control" name="proDocLicence" disabled="true">
+                            <label for="d_licence_no">Licence No: </label>
+                            <input type="text" class="form-control" name="d_licence_no" value="<?php  echo $d_licence_no;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proDocNID">NID No: </label>
-                            <input type="text" class="form-control" name="proDocNID" disabled="true">
+                            <input type="text" class="form-control" name="proDocNID" value="<?php  echo $d_nid_no;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proDocSpeciality">Speciality: </label>
-                            <input type="text" class="form-control" name="proDocSpeciality" disabled="true">
+                            <input type="text" class="form-control" name="proDocSpeciality" value="<?php  echo $d_specialty;?>" disabled="true">
                           </div>
                         </div>
 
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="proDocJoining">Joining Date: </label>
-                            <input type="text" class="form-control" name="proDocJoining" disabled="true">
+                            <input type="text" class="form-control" name="proDocJoining" value="<?php  echo $d_joining_date;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proDocPracticeRoom">Practice Room No: </label>
-                            <input type="text" class="form-control" name="proDocPracticeRoom" disabled="true">
+                            <input type="text" class="form-control" name="proDocPracticeRoom" value="<?php  echo $dPractiseRoom;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proDocCategory">Category: </label>
-                            <input type="text" class="form-control" name="proDocCategory" disabled="true">
+                            <input type="text" class="form-control" name="proDocCategory" value="<?php  echo $dCategory;?>" disabled="true">
                           </div>
                         </div>
                         <div class="form-row">
                           <div class="form-group col-md-9">
                             <label for="proDocRemarks">Remarks (Degree/Details):</label>
-                            <textarea class="form-control" id="proDocRemarks" disabled="true"></textarea>
+                            <textarea type="text" class="form-control" id="proDocRemarks" placeholder="<?php  echo $d_remarks;?>" disabled="true"></textarea>
                           </div>
                         </div>
                       </form>
@@ -514,7 +591,7 @@ header('location:doctor.php');
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docSpeciality">Doctor Speciality:</label>
-                    <select class="form-control" id="d_specialty">
+                    <select class="form-control" id="d_specialty" name="d_specialty">
                       <option>Choose...</option>
                       <option>Neurologists</option>
                       <option>Cardiologists</option>
@@ -527,7 +604,7 @@ header('location:doctor.php');
                 <div class="form-row">
                   <div class="form-group col-md-4">
                     <label for="docLicence">Licence No: </label>
-                    <input type="text" class="form-control" name="docLicd_licence_noence" placeholder="Enter licence no">
+                    <input type="text" class="form-control" name="d_licence_no" placeholder="Enter licence no">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docPracticeRoom">Practice Room No: </label>
@@ -547,7 +624,7 @@ header('location:doctor.php');
                 <div class="form-row">
                   <div class="form-group col-md-8">
                     <label for="docRemarks">Remarks:</label>
-                    <textarea class="form-control" id="d_remarks" placeholder="Enter degree / details"></textarea>
+                    <textarea class="form-control" id="d_remarks" name="d_remarks" placeholder="Enter degree / details"></textarea>
                   </div>
                   <div class="form-group col-md-4">
                     <label for="docJoining">Joining Date: </label>

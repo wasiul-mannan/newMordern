@@ -1,3 +1,51 @@
+<?php
+session_start();
+//error_reporting(0);
+include('include/config.php');
+//include('include/checklogin.php');
+//check_login();
+
+if(isset($_POST['Submit']))
+{	
+
+
+        $n_name=$_POST['n_name'];
+        $n_blood_group=$_POST['n_blood_group'];
+        $n_date_of_birth=$_POST['n_date_of_birth'];
+        $n_gender=$_POST['n_gender'];
+        $n_father_name=$_POST['n_father_name'];
+        $n_mother_name=$_POST['n_mother_name'];
+        $n_phone_number=$_POST['n_phone_number'];
+        $nRegiNo=$_POST['nRegiNo'];
+        $n_nid_no=$_POST['n_nid_no'];
+        $nurse_type=$_POST['nurse_type'];
+        $n_joining_date=$_POST['n_joining_date'];
+        $nAppointRoom=$_POST['nAppointRoom'];
+        $nurse_shift=$_POST['nurse_shift'];
+        $n_remarks=$_POST['n_remarks'];
+        $nVillage=$_POST['nVillage'];
+        $nPostOffice=$_POST['nPostOffice'];
+        $nThana=$_POST['nThana'];
+        $nUpazilla=$_POST['nUpazilla'];
+        $nDistrict=$_POST['nDistrict'];
+        $nStatus="Active";
+        
+
+$sql=mysqli_query($con,"insert into nurse(n_name,n_blood_group,n_date_of_birth,n_gender,n_father_name,n_mother_name,n_phone_number,nRegiNo,n_nid_no,nurse_type,n_joining_date,nAppointRoom,nurse_shift,n_remarks,nVillage,nPostOffice,nThana,nUpazilla,nDistrict,nStatus) 
+                            values('$n_name','$n_blood_group','$n_date_of_birth','$n_gender','$n_father_name','$n_mother_name','$n_phone_number','$nRegiNo','$n_nid_no','$nurse_type','$n_joining_date','$nAppointRoom','$nurse_shift','$n_remarks','$nVillage','$nPostOffice','$nThana','$nUpazilla','$nDistrict','$nStatus')");
+if($sql)
+{
+
+echo "<script>alert('Status added Successfully');</script>";
+header('location:nurse.php');
+
+}
+}
+?>
+
+
+
+
 <!doctype html>
 <html lang="en">
 
@@ -112,6 +160,27 @@
         <div class="tab-content" id="myTabContent">
 
           <!-- list-of-Nurse Tab -->
+
+<?php
+if(isset($_GET['del']))
+{
+        mysqli_query($con,"update nurse set nStatus='Inactive' where id = '".$_GET['id']."'");
+        $_SESSION['msg']="data deleted !!";
+}
+
+
+if(isset($_POST['set']))
+{	
+  $nRegiNo=$_POST['nRegiNo'];
+
+  $ret1=mysqli_query($con,"select * from nurse where nStatus='Active' and nRegiNo='$nRegiNo' or n_name='$nRegiNo'");
+}else{
+  $ret1=mysqli_query($con,"select * from nurse where nStatus='Active'");
+}
+?>
+
+
+
           <div class="tab-pane fade show active" id="list-of-nurses" role="tabpanel"
             aria-labelledby="list-of-nurses-tab">
 
@@ -121,21 +190,9 @@
               <div class="row">
                 <div class="col-xl-6 mb-3 align-items-center">
                   <form class="form-inline mb-2">
-                    <input class="form-control rounded-0" type="search" placeholder="Enter NurseID / Name "
+                    <input class="form-control rounded-0" type="search" name="nRegiNo" placeholder="Enter NurseID / Name "
                       aria-label="Search">
-                    <button class="btn btn-primary my-0 my-sm-0 mr-4 rounded-0" type="submit">Search</button>
-                  </form>
-                </div>
-                <div class="col-xl-6 mb-3 align-items-center">
-                  <form class="form-inline mb-2">
-                    <h5 class="text-center ml-md-auto pr-2">Search By:</h5>
-                    <select class="form-control col-xl-6" id="docSpeciality">
-                      <option>Choose...</option>
-                      <option>Head Nurse</option>
-                      <option>Staff Nurse</option>
-                      <option>Day Shift</option>
-                      <option>Night Shift</option>
-                    </select>
+                    <button class="btn btn-primary my-0 my-sm-0 mr-4 rounded-0" type="set" name="set">Search</button>
                   </form>
                 </div>
               </div>
@@ -156,28 +213,41 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th>1</th>
-                    <td>Nur-001</td>
-                    <td>Robiul</td>
-                    <td>Male</td>
-                    <td>01711-363636</td>
-                    <td>Head Nurse</td>
-                    <td>Floor-3, Room-308</td>
-                    <td>Night</td>
-                    <td>NewYork, USA</td>
-                  </tr>
-                  <tr>
-                    <th>2</th>
-                    <td>Nur-002</td>
-                    <td>Muniat</td>
-                    <td>Female</td>
-                    <td>01711-363636</td>
-                    <td>Staff Nurse</td>
-                    <td>Floor-3, Room-308</td>
-                    <td>Night</td>
-                    <td>NewYork, USA</td>
-                  </tr>
+                <?php
+
+$cnt=1;
+
+
+while ($rows=mysqli_fetch_array($ret1)) {
+
+  $nRegiNo=$rows['nRegiNo'];
+  $n_name=$rows['n_name'];
+  $n_gender=$rows['n_gender'];
+  $n_phone_number=$rows['n_phone_number'];
+  $nurse_type=$rows['nurse_type'];
+  $nAppointRoom=$rows['nAppointRoom'];
+  $nurse_shift=$rows['nurse_shift'];
+  $nVillage=$rows['nVillage'];
+  $nThana=$rows['nThana'];
+  $nUpazilla=$rows['nUpazilla'];
+?>                  
+                <tr>
+                  <th><?php  echo $cnt;?></th>
+                  <td><?php  echo $nRegiNo;?></td>
+                  <td><?php  echo $n_name;?></td>
+                  <td><?php  echo $n_gender;?></td>
+                  <td><?php  echo $n_phone_number;?></td>
+                  <td><?php  echo $nurse_type;?></td>
+                  <td><?php  echo $nAppointRoom;?></td>
+                  <td><?php  echo $nurse_shift;?></td>
+                  <td><?php  echo $nVillage;?>, <?php  echo $nThana;?>, <?php  echo $nUpazilla;?></td>
+                  <td><a href="nurse.php?id=<?php echo $rows['id']?>&del=delete" onClick="return confirm('Are you sure you want to delete?')"class="btn btn-transparent btn-xs tooltips" tooltip-placement="top" tooltip="Remove"><i class="btn btn-danger btn-sm">Delete</i></a></td>
+                </tr>
+<?php
+$cnt=1+$cnt;
+}
+
+?>
                 </tbody>
               </table>
             </div>
@@ -185,6 +255,62 @@
           <!-- End of list-of-Nurse Tab -->
 
           <!-- Nurse Profile Tab -->
+
+
+<?php
+
+$nRegiNo=null;
+$n_name=null;
+$n_gender=null;
+$n_date_of_birth=null;
+$n_blood_group=null;
+$n_phone_number=null;
+$n_father_name=null;
+$n_mother_name=null;
+$nVillage=null;
+$nThana=null;
+$nUpazilla=null;
+$n_nid_no=null;
+$nurse_type=null;
+$n_joining_date=null;
+$nAppointRoom=null;
+$nurse_shift=null;
+$n_remarks=null;
+
+if(isset($_POST['confirm'])){
+
+$nRegiNo=$_POST['nRegiNo'];
+
+$_SESSION['varname']=$nRegiNo;
+
+$ret=mysqli_query($con,"select * from nurse where nRegiNo='$nRegiNo' ");
+$row=mysqli_fetch_array($ret);
+
+$n_name=$row['n_name'];
+$n_gender=$row['n_gender'];
+$n_date_of_birth=$row['n_date_of_birth'];
+$n_blood_group=$row['n_blood_group'];
+$n_phone_number=$row['n_phone_number'];
+$n_father_name=$row['n_father_name'];
+$n_mother_name=$row['n_mother_name'];
+$nVillage=$row['nVillage'];
+$nThana=$row['nThana'];
+$nUpazilla=$row['nUpazilla'];
+$n_nid_no=$row['n_nid_no'];
+$nurse_type=$row['nurse_type'];
+$n_joining_date=$row['n_joining_date'];
+$nAppointRoom=$row['nAppointRoom'];
+$nurse_shift=$row['nurse_shift'];
+$n_remarks=$row['n_remarks'];
+
+}
+
+?>
+
+
+
+
+
           <div class="tab-pane fade" id="nurse-profile" role="tabpanel" aria-labelledby="nurse-profile-tab">
 
             <div class="mx-1 my-3">
@@ -193,11 +319,11 @@
 
                   <div class="row align-items-center">
                     <div class="col-8 mb-4 mb-xl-0">
-                      <form class="form-inline mb-2">
+                      <form class="form-inline mb-2" method="post">
                         <h6 class="text-center mt-2 col-lg-5">Nurse Registration ID:</h6>
-                        <input class="form-control rounded-0 col-lg-4" type="search" placeholder="Enter RegID "
+                        <input class="form-control rounded-0 col-lg-4" type="search" name="nRegiNo" placeholder="Enter RegID "
                           aria-label="Search">
-                        <button class="btn btn-primary my-0 my-sm-0 rounded-0" type="submit">Search</button>
+                        <button class="btn btn-primary my-0 my-sm-0 rounded-0" type="confirm" name="confirm">Search</button>
                       </form>
                     </div>
                   </div>
@@ -211,40 +337,40 @@
                         <div class="form-row">
                           <div class="form-group col-3">
                             <label for="proNurName">Nurse Name: </label>
-                            <input type="text" class="form-control" name="proNurName" disabled="true">
+                            <input type="text" class="form-control" name="proNurName" value="<?php  echo $n_name;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="proNurGender">Gender: </label>
-                            <input type="text" class="form-control" name="proNurGender" disabled="true">
+                            <input type="text" class="form-control" name="proNurGender" value="<?php  echo $n_gender;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="proNurDOB">Date of Birth: </label>
-                            <input type="text" class="form-control" name="proNurDOB" disabled="true">
+                            <input type="text" class="form-control" name="proNurDOB" value="<?php  echo $n_date_of_birth;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="proNurBloodGroup">Blood Group: </label>
-                            <input type="text" class="form-control" name="proNurBloodGroup" disabled="true">
+                            <input type="text" class="form-control" name="proNurBloodGroup" value="<?php  echo $n_blood_group;?>" disabled="true">
                           </div>
                           <div class="form-group col-3">
                             <label for="proNurPhoneNo">Phone Number: </label>
-                            <input type="text" class="form-control" name="proNurPhoneNo" disabled="true">
+                            <input type="text" class="form-control" name="proNurPhoneNo" value="<?php  echo $n_phone_number;?>" disabled="true">
                           </div>
                         </div>
 
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="proNurFatherName">Father's Name: </label>
-                            <input type="text" class="form-control" name="proNurFatherName" disabled="true">
+                            <input type="text" class="form-control" name="proNurFatherName" value="<?php  echo $n_father_name;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proNurMotherName">Mother's Name: </label>
-                            <input type="text" class="form-control" name="proNurMotherName" disabled="true">
+                            <input type="text" class="form-control" name="proNurMotherName" value="<?php  echo $n_mother_name;?>" disabled="true">
                           </div>
 
                           <!-- Address is the combination of Village, PostOffice and District -->
                           <div class="form-group col-md-6">
                             <label for="proNurAddress">Address: </label>
-                            <input type="text" class="form-control" name="proNurAddress" disabled="true">
+                            <input type="text" class="form-control" name="proNurAddress" value="<?php  echo $nVillage;?>, <?php  echo $nThana;?>, <?php  echo $nUpazilla;?>" disabled="true">
                           </div>
                         </div>
 
@@ -253,19 +379,19 @@
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="proNurRegID">Registration ID: </label>
-                            <input type="text" class="form-control" name="proNurRegID" disabled="true">
+                            <input type="text" class="form-control" name="proNurRegID" value="<?php  echo $nRegiNo;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proNurNID">NID No: </label>
-                            <input type="text" class="form-control" name="proNurNID" disabled="true">
+                            <input type="text" class="form-control" name="proNurNID" value="<?php  echo $n_nid_no;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proNurType">Nurse Type: </label>
-                            <input type="text" class="form-control" name="proNurType" disabled="true">
+                            <input type="text" class="form-control" name="proNurType" value="<?php  echo $nurse_type;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proNurJoining">Joining Date: </label>
-                            <input type="text" class="form-control" name="proNurJoining" disabled="true">
+                            <input type="text" class="form-control" name="proNurJoining" value="<?php  echo $n_joining_date;?>" disabled="true">
                           </div>
                         </div>
 
@@ -273,17 +399,17 @@
 
                           <div class="form-group col-md-3">
                             <label for="proNurAppointed">Appointed Room: </label>
-                            <input type="text" class="form-control" name="proNurAppointed" disabled="true">
+                            <input type="text" class="form-control" name="proNurAppointed" value="<?php  echo $nAppointRoom;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proNurShift">Nurse Shift: </label>
-                            <input type="text" class="form-control" name="proNurShift" disabled="true">
+                            <input type="text" class="form-control" name="proNurShift" value="<?php  echo $nurse_shift;?>" disabled="true">
                           </div>
                         </div>
                         <div class="form-row">
                           <div class="form-group col-md-9">
                             <label for="proDocRemarks">Remarks (Degree/Details):</label>
-                            <textarea class="form-control" id="proDocRemarks" disabled="true"></textarea>
+                            <textarea class="form-control" id="proDocRemarks" placeholder="<?php  echo $n_remarks;?>" disabled="true"></textarea>
                           </div>
                         </div>
                       </form>
@@ -375,15 +501,15 @@
             <div class="mx-3 my-3">
               <h4 class="text-center">Registration Form</h4>
               <hr>
-              <form>
+              <form method="post">
                 <div class="form-row">
                   <div class="form-group col-4">
                     <label for="nurName">Nurse Name: </label>
-                    <input type="text" class="form-control" name="nurName" placeholder="Enter name">
+                    <input type="text" class="form-control" name="n_name" placeholder="Enter name">
                   </div>
                   <div class="form-group col-2">
                     <label for="nurBloodGroup">Blood Group:</label>
-                    <select class="form-control" id="nurBloodGroup">
+                    <select class="form-control" id="n_blood_group" name="n_blood_group">
                       <option>Choose...</option>
                       <option>A+</option>
                       <option>O+</option>
@@ -397,22 +523,22 @@
                   </div>
                   <div class="form-group col-2">
                     <label for="nurDOB">Date of Birth: </label>
-                    <input type="text" class="form-control" name="nurDOB" placeholder="Enter (D-M-Y)">
+                    <input type="text" class="form-control" name="n_date_of_birth" value="<?php date_default_timezone_set("Asia/Dhaka"); echo date("d - m - Y "); ?>">
                   </div>
 
                   <div class="form-group col-4">
                     <label for="nurGender">Gender: </label>
                     <br>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="nurGender" id="inlineRadio1" value="Male">
+                      <input class="form-check-input" type="radio" name="n_gender" id="inlineRadio1" value="Male">
                       <label class="form-check-label" for="inlineRadio1">Female</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="nurGender" id="inlineRadio2" value="Female">
+                      <input class="form-check-input" type="radio" name="n_gender" id="inlineRadio2" value="Female">
                       <label class="form-check-label" for="inlineRadio2">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="nurGender" id="inlineRadio3" value="Others">
+                      <input class="form-check-input" type="radio" name="n_gender" id="inlineRadio3" value="Others">
                       <label class="form-check-label" for="inlineRadio3">Others</label>
                     </div>
                   </div>
@@ -422,15 +548,15 @@
                 <div class="form-row">
                   <div class="form-group col-md-4">
                     <label for="nurFatherName">Father's Name: </label>
-                    <input type="text" class="form-control" name="nurFatherName" placeholder="Enter father name">
+                    <input type="text" class="form-control" name="n_father_name" placeholder="Enter father name">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="nurMotherName">Mother's Name: </label>
-                    <input type="text" class="form-control" name="nurMotherName" placeholder="Enter mother name">
+                    <input type="text" class="form-control" name="n_mother_name" placeholder="Enter mother name">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="nurPhoneNo">Phone Number: </label>
-                    <input type="text" class="form-control" name="nurPhoneNo" placeholder="Enter phone no.">
+                    <input type="text" class="form-control" name="n_phone_number" placeholder="Enter phone no.">
                   </div>
                 </div>
 
@@ -439,15 +565,15 @@
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="nurRegistrationID">Nurse Registration ID: </label>
-                    <input type="text" class="form-control" name="nurRegistrationID" placeholder="Enter nurse regId">
+                    <input type="text" class="form-control" name="nRegiNo" placeholder="Enter nurse regId">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="nurNID">Nurse NID: </label>
-                    <input type="text" class="form-control" name="nurNID" placeholder="Enter NID no">
+                    <input type="text" class="form-control" name="n_nid_no" placeholder="Enter NID no">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="nurSpeciality">Nurse Type:</label>
-                    <select class="form-control" id="nurSpeciality">
+                    <select class="form-control" id="nurse_type" name="nurse_type">
                       <option>Choose...</option>
                       <option>Head Nurse</option>
                       <option>Sraff Nurse</option>
@@ -458,15 +584,15 @@
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="nurJoining">Joining Date: </label>
-                    <input type="text" class="form-control" name="nurJoining" placeholder="Enter joining date">
+                    <input type="text" class="form-control" name="n_joining_date" value="<?php date_default_timezone_set("Asia/Dhaka"); echo date("d - m - Y "); ?>">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="nurAppointed">Appointed Room: </label>
-                    <input type="text" class="form-control" name="nurAppointed" placeholder="Enter practice room no">
+                    <input type="text" class="form-control" name="nAppointRoom" placeholder="Enter practice room no">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="nurShift">Nurse Shift:</label>
-                    <select class="form-control" id="nurShift">
+                    <select class="form-control" id="nurse_shift" name="nurse_shift">
                       <option>Choose...</option>
                       <option>Day</option>
                       <option>Night</option>
@@ -477,7 +603,7 @@
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="nurRemarks">Remarks:</label>
-                    <textarea class="form-control" id="nurRemarks" placeholder="Enter degree / details"></textarea>
+                    <textarea class="form-control" id="n_remarks" name="n_remarks" placeholder="Enter degree / details"></textarea>
                   </div>
                 </div>
 
@@ -486,26 +612,26 @@
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="nurVillage">Village: </label>
-                    <input type="text" class="form-control" name="nurVillage" placeholder="Enter village">
+                    <input type="text" class="form-control" name="nVillage" placeholder="Enter village">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="nurPostOffice">Post Office: </label>
-                    <input type="text" class="form-control" name="nurPostOffice" placeholder="Enter post office">
+                    <input type="text" class="form-control" name="nPostOffice" placeholder="Enter post office">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="nurThana">Thana: </label>
-                    <input type="text" class="form-control" name="nurThana" placeholder="Enter thana">
+                    <input type="text" class="form-control" name="nThana" placeholder="Enter thana">
                   </div>
                 </div>
 
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="nurUpagilla">Upazilla: </label>
-                    <input type="text" class="form-control" name="nurUpagilla" placeholder="Enter upazilla">
+                    <input type="text" class="form-control" name="nUpazilla" placeholder="Enter upazilla">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="nurDistrict">District: </label>
-                    <input type="text" class="form-control" name="nurDistrict" placeholder="Enter district">
+                    <input type="text" class="form-control" name="nDistrict" placeholder="Enter district">
                   </div>
                 </div>
 
