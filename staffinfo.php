@@ -1,3 +1,51 @@
+<?php
+session_start();
+//error_reporting(0);
+include('include/config.php');
+//include('include/checklogin.php');
+//check_login();
+
+if(isset($_POST['submit']))
+{	
+
+
+        $sProfession=$_POST['sProfession'];
+        $s_name=$_POST['s_name'];
+        $s_date_of_birth=$_POST['s_date_of_birth'];
+        $sPhoneNo=$_POST['sPhoneNo'];
+        $s_father_name=$_POST['s_father_name'];
+        $s_mother_name=$_POST['s_mother_name'];
+        $s_blood=$_POST['s_blood'];
+        $s_gender=$_POST['s_gender'];
+        $sRegiNo=$_POST['sRegiNo'];
+        $s_nid_number=$_POST['s_nid_number'];
+        $s_joining_date=$_POST['s_joining_date'];
+        $stuff_shift=$_POST['stuff_shift'];
+        $s_remarks=$_POST['s_remarks'];
+        $sVillage=$_POST['sVillage'];
+        $sPostOffice=$_POST['sPostOffice'];
+        $sThana=$_POST['sThana'];
+        $sUpazilla=$_POST['sUpazilla'];
+        $sDistrict=$_POST['sDistrict'];
+        $sStatus="Active";
+        
+
+$sql=mysqli_query($con,"insert into staff(sProfession,s_name,s_date_of_birth,sPhoneNo,s_father_name,s_mother_name,s_blood,s_gender,sRegiNo,s_nid_number,s_joining_date,stuff_shift,s_remarks,sVillage,sPostOffice,sThana,sUpazilla,sDistrict,sStatus) 
+                            values('$sProfession','$s_name','$s_date_of_birth','$sPhoneNo','$s_father_name','$s_mother_name','$s_blood','$s_gender','$sRegiNo','$s_nid_number','$s_joining_date','$stuff_shift','$s_remarks','$sVillage','$sPostOffice','$sThana','$sUpazilla','$sDistrict','$sStatus')");
+if($sql)
+{
+
+echo "<script>alert('Status added Successfully');</script>";
+header('location:staffinfo.php');
+
+}
+}
+?>
+
+
+
+
+
 <!doctype html>
 <html lang="en">
 
@@ -120,25 +168,34 @@
               <h3 class="text-center mb-3">List of Stuffs</h3>
 
               <div class="row">
+              <?php
+if(isset($_GET['del']))
+{
+        mysqli_query($con,"update staff set sStatus='Inactive' where id = '".$_GET['id']."'");
+        $_SESSION['msg']="data deleted !!";
+}
+
+
+if(isset($_POST['set']))
+{	
+  $sRegiNo=$_POST['sRegiNo'];
+
+  $ret1=mysqli_query($con,"select * from staff where sStatus='Active' and sRegiNo='$sRegiNo' or s_name='$sRegiNo'");
+}else{
+  $ret1=mysqli_query($con,"select * from staff where sStatus='Active'");
+}
+?>
+
+
+
                 <div class="col-xl-6 mb-3 align-items-center">
-                  <form class="form-inline mb-2">
-                    <input class="form-control rounded-0" type="search" placeholder="Enter StuffID / Name "
+                  <form class="form-inline mb-2" method="post">
+                    <input class="form-control rounded-0" type="search" name="sRegiNo" placeholder="Enter StuffID / Name "
                       aria-label="Search">
-                    <button class="btn btn-primary my-0 my-sm-0 mr-4 rounded-0" type="submit">Search</button>
+                    <button class="btn btn-primary my-0 my-sm-0 mr-4 rounded-0" type="set" name="set">Search</button>
                   </form>
                 </div>
-                <div class="col-xl-6 mb-3 align-items-center">
-                  <form class="form-inline mb-2">
-                    <h5 class="text-center ml-md-auto pr-2">Search By:</h5>
-                    <select class="form-control col-xl-6" id="docSpeciality">
-                      <option>Choose Profession...</option>
-                      <option>Word Boy</option>
-                      <option>Personal Assistant</option>
-                      <option>Manager</option>
-                      <option>Guard</option>
-                    </select>
-                  </form>
-                </div>
+
               </div>
 
               <table class="table table-bordered table-dark text-center">
@@ -156,26 +213,38 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th>1</th>
-                    <td>WB-001</td>
-                    <td>Robiul</td>
-                    <td>Word Boy</td>
-                    <td>Male</td>
-                    <td>01711-363636</td>
-                    <td>Night</td>
-                    <td>NewYork, USA</td>
-                  </tr>
-                  <tr>
-                    <th>1</th>
-                    <td>Man-001</td>
-                    <td>Muniat</td>
-                    <td>Manager</td>
-                    <td>Female</td>
-                    <td>01711-363636</td>
-                    <td>Night</td>
-                    <td>NewYork, USA</td>
-                  </tr>
+<?php
+
+$cnt=1;
+
+while ($rows=mysqli_fetch_array($ret1)) {
+
+  $sRegiNo=$rows['sRegiNo'];
+  $s_name=$rows['s_name'];
+  $sProfession=$rows['sProfession'];
+  $s_gender=$rows['s_gender'];
+  $sPhoneNo=$rows['sPhoneNo'];
+  $stuff_shift=$rows['stuff_shift'];
+  $sVillage=$rows['sVillage'];
+  $sThana=$rows['sThana'];
+  $sUpazilla=$rows['sUpazilla'];
+?>                  
+                <tr>
+                  <th><?php  echo $cnt;?></th>
+                  <td><?php  echo $sRegiNo;?></td>
+                  <td><?php  echo $s_name;?></td>
+                  <td><?php  echo $sProfession;?></td>
+                  <td><?php  echo $s_gender;?></td>
+                  <td><?php  echo $sPhoneNo;?></td>
+                  <td><?php  echo $stuff_shift;?></td>
+                  <td><?php  echo $sVillage;?>, <?php  echo $sThana;?>, <?php  echo $sUpazilla;?></td>
+                  <td><a href="staffinfo.php?id=<?php echo $rows['id']?>&del=delete" onClick="return confirm('Are you sure you want to delete?')"class="btn btn-transparent btn-xs tooltips" tooltip-placement="top" tooltip="Remove"><i class="btn btn-danger btn-sm">Delete</i></a></td>
+                </tr>
+<?php
+$cnt=1+$cnt;
+}
+
+?>
                 </tbody>
               </table>
             </div>
@@ -183,6 +252,66 @@
           <!-- End of list-of-Stuffs Tab -->
 
           <!-- Stuffs Profile Tab -->
+
+
+
+          <?php
+
+$sRegiNo=null;
+$s_name=null;
+$sProfession=null;
+$s_gender=null;
+$s_date_of_birth=null;
+$sPhoneNo=null;
+$s_father_name=null;
+$s_mother_name=null;
+$s_blood=null;
+$sVillage=null;
+$sThana=null;
+$sUpazilla=null;
+$s_nid_number=null;
+$s_joining_date=null;
+$stuff_shift=null;
+$s_remarks=null;
+
+
+if(isset($_POST['confirm'])){
+
+$sRegiNo=$_POST['sRegiNo'];
+
+$_SESSION['varname']=$sRegiNo;
+
+$ret=mysqli_query($con,"select * from staff where sRegiNo='$sRegiNo' ");
+$row=mysqli_fetch_array($ret);
+
+
+
+$sProfession=$row['sProfession'];
+$s_name=$row['s_name'];
+$s_gender=$row['s_gender'];
+$s_date_of_birth=$row['s_date_of_birth'];
+$sPhoneNo=$row['sPhoneNo'];
+$s_father_name=$row['s_father_name'];
+$s_mother_name=$row['s_mother_name'];
+$s_blood=$row['s_blood'];
+$sVillage=$row['sVillage'];
+$sThana=$row['sThana'];
+$sUpazilla=$row['sUpazilla'];
+$s_nid_number=$row['s_nid_number'];
+$s_joining_date=$row['s_joining_date'];
+$stuff_shift=$row['stuff_shift'];
+$s_remarks=$row['s_remarks'];
+
+}
+
+?>
+
+
+
+
+
+
+
           <div class="tab-pane fade" id="staffs-profile" role="tabpanel" aria-labelledby="staffs-profile-tab">
 
             <div class="mx-1 my-3">
@@ -191,11 +320,11 @@
 
                   <div class="row align-items-center">
                     <div class="col-8 mb-4 mb-xl-0">
-                      <form class="form-inline mb-2">
+                      <form class="form-inline mb-2" method="post">
                         <h6 class="text-center mt-2 col-lg-5">Stuffs Registration ID:</h6>
-                        <input class="form-control rounded-0 col-lg-4" type="search" placeholder="Enter RegID "
+                        <input class="form-control rounded-0 col-lg-4" type="search" name="sRegiNo" placeholder="Enter RegID "
                           aria-label="Search">
-                        <button class="btn btn-primary my-0 my-sm-0 rounded-0" type="submit">Search</button>
+                        <button class="btn btn-primary my-0 my-sm-0 rounded-0" type="confirm" name="confirm">Search</button>
                       </form>
                     </div>
                   </div>
@@ -209,44 +338,44 @@
                         <div class="form-row">
                           <div class="form-group col-3">
                             <label for="proStuffName">Stuffs Name: </label>
-                            <input type="text" class="form-control" name="proStuffName" disabled="true">
+                            <input type="text" class="form-control" name="proStuffName" value="<?php  echo $s_name;?>" disabled="true">
                           </div>
                           <div class="form-group col-3">
                             <label for="proStuffProfession">Profession: </label>
-                            <input type="text" class="form-control" name="proStuffProfession" disabled="true">
+                            <input type="text" class="form-control" name="proStuffProfession" value="<?php  echo $sProfession;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="proStuffGender">Gender: </label>
-                            <input type="text" class="form-control" name="proStuffGender" disabled="true">
+                            <input type="text" class="form-control" name="proStuffGender" value="<?php  echo $s_gender;?>" disabled="true">
                           </div>
                           <div class="form-group col-2">
                             <label for="proStuffDOB">Date of Birth: </label>
-                            <input type="text" class="form-control" name="proStuffDOB" disabled="true">
+                            <input type="text" class="form-control" name="proStuffDOB" value="<?php  echo $s_date_of_birth;?>" disabled="true">
                           </div>
 
                           <div class="form-group col-2">
                             <label for="proStuffPhoneNo">Phone Number: </label>
-                            <input type="text" class="form-control" name="proStuffPhoneNo" disabled="true">
+                            <input type="text" class="form-control" name="proStuffPhoneNo" value="<?php  echo $sPhoneNo;?>" disabled="true">
                           </div>
                         </div>
 
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="proStuffFatherName">Father's Name: </label>
-                            <input type="text" class="form-control" name="proStuffFatherName" disabled="true">
+                            <input type="text" class="form-control" name="proStuffFatherName" value="<?php  echo $s_father_name;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proStuffMotherName">Mother's Name: </label>
-                            <input type="text" class="form-control" name="proStuffMotherName" disabled="true">
+                            <input type="text" class="form-control" name="proStuffMotherName" value="<?php  echo $s_mother_name;?>" disabled="true">
                           </div>
                           <div class="form-group col-1">
                             <label for="proStuffBloodGroup">Blood: </label>
-                            <input type="text" class="form-control" name="proStuffBloodGroup" disabled="true">
+                            <input type="text" class="form-control" name="proStuffBloodGroup" value="<?php  echo $s_blood;?>" disabled="true">
                           </div>
                           <!-- Address is the combination of Village, PostOffice and District -->
                           <div class="form-group col-md-5">
                             <label for="proStuffAddress">Address: </label>
-                            <input type="text" class="form-control" name="proStuffAddress" disabled="true">
+                            <input type="text" class="form-control" name="proStuffAddress" value="<?php  echo $sVillage;?>, <?php  echo $sThana;?>, <?php  echo $sUpazilla;?>" disabled="true">
                           </div>
 
                         </div>
@@ -256,26 +385,26 @@
                         <div class="form-row">
                           <div class="form-group col-md-3">
                             <label for="proStuffRegID">Registration ID: </label>
-                            <input type="text" class="form-control" name="proStuffRegID" disabled="true">
+                            <input type="text" class="form-control" name="proStuffRegID" value="<?php  echo $sRegiNo;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proStuffNID">NID No: </label>
-                            <input type="text" class="form-control" name="proStuffNID" disabled="true">
+                            <input type="text" class="form-control" name="proStuffNID" value="<?php  echo $s_nid_number;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proStuffJoining">Joining Date: </label>
-                            <input type="text" class="form-control" name="proStuffJoining" disabled="true">
+                            <input type="text" class="form-control" name="proStuffJoining" value="<?php  echo $s_joining_date;?>" disabled="true">
                           </div>
                           <div class="form-group col-md-3">
                             <label for="proStuffShift">Stuffs Shift: </label>
-                            <input type="text" class="form-control" name="proStuffShift" disabled="true">
+                            <input type="text" class="form-control" name="proStuffShift" value="<?php  echo $stuff_shift;?>" disabled="true">
                           </div>
                         </div>
 
                         <div class="form-row">
                           <div class="form-group col-md-12">
                             <label for="proStuffRemarks">Remarks (Degree/Details):</label>
-                            <textarea class="form-control" id="proStuffRemarks" disabled="true"></textarea>
+                            <textarea class="form-control" id="proStuffRemarks" placeholder="<?php  echo $s_remarks;?>" disabled="true"></textarea>
                           </div>
                         </div>
                       </form>
@@ -390,11 +519,11 @@
             <div class="mx-3 my-3">
               <h4 class="text-center">Registration Form</h4>
               <hr>
-              <form>
+              <form method="post">
                 <div class="form-row">
                   <div class="form-group col-4">
                     <label for="stuffProfession">Profession:</label>
-                    <select class="form-control" id="stuffProfession">
+                    <select class="form-control" id="sProfession" name="sProfession">
                       <option>Select Profession...</option>
                       <option>Word Boy</option>
                       <option>Personal Assistant</option>
@@ -404,30 +533,30 @@
                   </div>
                   <div class="form-group col-4">
                     <label for="stuffName">Stuff Name: </label>
-                    <input type="text" class="form-control" name="stuffName" placeholder="Enter name">
+                    <input type="text" class="form-control" name="s_name" placeholder="Enter name">
                   </div>
                   <div class="form-group col-2">
                     <label for="stuffDOB">Date of Birth: </label>
-                    <input type="text" class="form-control" name="stuffDOB" placeholder="Enter (D-M-Y)">
+                    <input type="text" class="form-control" name="s_date_of_birth" value="<?php date_default_timezone_set("Asia/Dhaka"); echo date("d - m - Y "); ?>">
                   </div>
                   <div class="form-group col-md-2">
                     <label for="stuffPhoneNo">Phone Number: </label>
-                    <input type="text" class="form-control" name="stuffPhoneNo" placeholder="Enter phone no.">
+                    <input type="text" class="form-control" name="sPhoneNo" placeholder="Enter phone no.">
                   </div>
                 </div>
 
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="stuffFatherName">Father's Name: </label>
-                    <input type="text" class="form-control" name="stuffFatherName" placeholder="Enter father name">
+                    <input type="text" class="form-control" name="s_father_name" placeholder="Enter father name">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="stuffMotherName">Mother's Name: </label>
-                    <input type="text" class="form-control" name="stuffMotherName" placeholder="Enter mother name">
+                    <input type="text" class="form-control" name="s_mother_name" placeholder="Enter mother name">
                   </div>
                   <div class="form-group col-2">
                     <label for="stuffBloodGroup">Blood Group:</label>
-                    <select class="form-control" id="stuffBloodGroup">
+                    <select class="form-control" id="s_blood" name="s_blood">
                       <option>Choose...</option>
                       <option>A+</option>
                       <option>O+</option>
@@ -443,15 +572,15 @@
                     <label for="stuffGender">Gender: </label>
                     <br>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="stuffGender" id="inlineRadio1" value="Male">
+                      <input class="form-check-input" type="radio" name="s_gender" id="inlineRadio1" value="Male">
                       <label class="form-check-label" for="inlineRadio1">Female</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="stuffGender" id="inlineRadio2" value="Female">
+                      <input class="form-check-input" type="radio" name="s_gender" id="inlineRadio2" value="Female">
                       <label class="form-check-label" for="inlineRadio2">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="stuffGender" id="inlineRadio3" value="Others">
+                      <input class="form-check-input" type="radio" name="s_gender" id="inlineRadio3" value="Others">
                       <label class="form-check-label" for="inlineRadio3">Others</label>
                     </div>
                   </div>
@@ -462,19 +591,19 @@
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="stuffRegistrationID">Stuff Registration ID: </label>
-                    <input type="text" class="form-control" name="stuffRegistrationID" placeholder="Enter nurse regId">
+                    <input type="text" class="form-control" name="sRegiNo" placeholder="Enter nurse regId">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="stuffNID">Stuff NID: </label>
-                    <input type="text" class="form-control" name="stuffNID" placeholder="Enter NID no">
+                    <input type="text" class="form-control" name="s_nid_number" placeholder="Enter NID no">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="stuffJoining">Joining Date: </label>
-                    <input type="text" class="form-control" name="stuffJoining" placeholder="Enter joining date">
+                    <input type="text" class="form-control" name="s_joining_date" value="<?php date_default_timezone_set("Asia/Dhaka"); echo date("d - m - Y "); ?>">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="stuffShift">Stuff Shift:</label>
-                    <select class="form-control" id="stuffShift">
+                    <select class="form-control" id="stuff_shift" name="stuff_shift">
                       <option>Choose...</option>
                       <option>Day</option>
                       <option>Night</option>
@@ -485,7 +614,7 @@
                 <div class="form-row">
                   <div class="form-group col-md-12">
                     <label for="stuffRemarks">Remarks:</label>
-                    <textarea class="form-control" id="stuffRemarks" placeholder="Enter degree / details"></textarea>
+                    <textarea class="form-control" id="s_remarks" name="s_remarks" placeholder="Enter degree / details"></textarea>
                   </div>
                 </div>
 
@@ -494,32 +623,32 @@
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="stuffVillage">Village: </label>
-                    <input type="text" class="form-control" name="stuffVillage" placeholder="Enter village">
+                    <input type="text" class="form-control" name="sVillage" placeholder="Enter village">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="stuffPostOffice">Post Office: </label>
-                    <input type="text" class="form-control" name="stuffPostOffice" placeholder="Enter post office">
+                    <input type="text" class="form-control" name="sPostOffice" placeholder="Enter post office">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="stuffThana">Thana: </label>
-                    <input type="text" class="form-control" name="stuffThana" placeholder="Enter thana">
+                    <input type="text" class="form-control" name="sThana" placeholder="Enter thana">
                   </div>
                 </div>
 
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="stuffUpagilla">Upazilla: </label>
-                    <input type="text" class="form-control" name="stuffUpagilla" placeholder="Enter upazilla">
+                    <input type="text" class="form-control" name="sUpazilla" placeholder="Enter upazilla">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="stuffDistrict">District: </label>
-                    <input type="text" class="form-control" name="stuffDistrict" placeholder="Enter district">
+                    <input type="text" class="form-control" name="sDistrict" placeholder="Enter district">
                   </div>
                 </div>
 
                 <hr>
 
-                <button type="Submit" name="Submit"
+                <button type="submit" name="submit"
                   class="btn btn-primary mb-3 btn-lg stuff-admission-btn">Register</button>
 
               </form>
