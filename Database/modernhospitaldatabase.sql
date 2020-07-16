@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 09, 2020 at 12:02 PM
+-- Generation Time: Jul 16, 2020 at 04:33 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.2.31
 
@@ -160,7 +160,8 @@ CREATE TABLE `patient` (
 INSERT INTO `patient` (`id`, `pName`, `pAge`, `pBloodGroup`, `pSex`, `pCareOf`, `pMotherName`, `pPhoneNo`, `pVillage`, `pPostOffice`, `pThana`, `pUpagilla`, `pDistrict`, `regiNo`, `pRefferedDoctor`, `pDateTimeAdmission`, `pCabinNo`, `pWordNo`, `pBedNo`, `pReleaseDate`, `pRemarks`, `patientstatus`) VALUES
 (14, 'Rabiul', '30', 'B+', '', 'x', 'x', '65465123', 'x', '', 'x', 'x', 'x', 'r-1', 'Doctor A', '2020-07-02 22:44:29', 'x', 'x', 'x', NULL, '', 'Active'),
 (15, 'Tanvir', '25', 'B+', 'Male', 'x', 'x', '6465432', 'Coloni', '', 'Bogra', 'Bogra', 'Bogra', 'r-2', 'Doctor B', '2020-07-03 06:09:00', 'c-1', 'w-2', 'b-3', NULL, '', 'Active'),
-(16, 'Rabiul2', '30', 'B+', 'Male', 'x', 'x', '65465123', 'z', '', 'z', 'z', 'z', 'r-3', 'D2', '2020-07-03 06:48:36', 'c-1', 'w-1', 'b-1', NULL, '', 'Active');
+(16, 'Rabiul2', '30', 'B+', 'Male', 'x', 'x', '65465123', 'z', '', 'z', 'z', 'z', 'r-3', 'D2', '2020-07-03 06:48:36', 'c-1', 'w-1', 'b-1', NULL, '', 'Active'),
+(17, 'Rabiul222', '30', 'AB+', 'Male', 'dont know', 'dont know', '65465123', 'z', '', 'don', 'z', 'z', 'r-7', 'Aj Styles', '2020-07-09 13:33:28', 'C-1', 'w-1', 'Bed-2', NULL, '', 'Active');
 
 -- --------------------------------------------------------
 
@@ -195,7 +196,40 @@ INSERT INTO `patientadpayment` (`id`, `regiNo`, `pDepositMoney`, `pAdPaymentDate
 (18, 'r-1', '100', '2020-07-05 19:04:00'),
 (19, '', '50', '2020-07-07 18:08:29'),
 (20, '', '50', '2020-07-07 18:08:49'),
-(21, 'r-1', '50', '2020-07-07 18:09:26');
+(22, 'r-7', '0', '2020-07-09 13:33:30'),
+(23, 'r-2', '50', '2020-07-09 13:33:51'),
+(24, '', '50.50', '2020-07-15 16:26:46'),
+(25, '', '50.50', '2020-07-15 16:27:04'),
+(26, '', '20', '2020-07-15 16:28:37'),
+(27, 'r-2', '10', '2020-07-15 16:29:30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_receipt`
+--
+
+CREATE TABLE `patient_receipt` (
+  `receipt_id` varchar(30) NOT NULL,
+  `p_id` varchar(15) NOT NULL,
+  `transect_by` varchar(20) NOT NULL,
+  `transect_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `admission_fee` double NOT NULL,
+  `consultation_fee` double NOT NULL,
+  `otp_fee` double NOT NULL,
+  `surgeon_fee` double NOT NULL,
+  `anesthetist_fee` double NOT NULL,
+  `assist_fee` double NOT NULL,
+  `service_fee` double NOT NULL,
+  `medicine_fee` double NOT NULL,
+  `bed_rent` double NOT NULL,
+  `miscellaneous_fee` double NOT NULL,
+  `vat` double NOT NULL,
+  `total_amount` double NOT NULL,
+  `percentage` double NOT NULL,
+  `percentage_amount` double NOT NULL,
+  `grand_total` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -292,6 +326,12 @@ ALTER TABLE `patientadpayment`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `patient_receipt`
+--
+ALTER TABLE `patient_receipt`
+  ADD PRIMARY KEY (`receipt_id`);
+
+--
 -- Indexes for table `staff`
 --
 ALTER TABLE `staff`
@@ -329,13 +369,13 @@ ALTER TABLE `nurse`
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `patientadpayment`
 --
 ALTER TABLE `patientadpayment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `staff`

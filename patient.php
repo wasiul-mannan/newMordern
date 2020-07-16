@@ -709,6 +709,7 @@ $pCabinNo=$row['pCabinNo'];
 $pWordNo=$row['pWordNo'];
 $pBedNo=$row['pBedNo'];
 $pRemarks=$row['pRemarks'];
+$profileTotalExpenses=$row['profileTotalExpenses'];
 
 }
 
@@ -812,7 +813,7 @@ $pRemarks=$row['pRemarks'];
                           </div>
                           <div class="form-group col-md-3">
                             <label for="profileTotalExpenses">Total Expenses: </label>
-                            <input type="text" class="form-control" name="profileTotalExpenses" value="<?php  echo $pRemarks;?>" disabled="true">
+                            <input type="text" class="form-control" name="profileTotalExpenses" value="<?php  echo $profileTotalExpenses;?>" disabled="true">
                           </div>
                         </div>
 

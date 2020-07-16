@@ -1,3 +1,135 @@
+<?php
+session_start();
+//error_reporting(0);
+include('include/config.php');
+//include('include/checklogin.php');
+//check_login();
+
+
+
+        $pName=null;
+        $regiNo=null;
+        $pAge=null;
+        $pSex=null;
+        $pPhoneNo=null;
+        $pCareOf=null;
+        $pBloodGroup=null;
+        $pRefferedDoctor=null;
+        $pCabinNo=null;
+        $pWordNo=null;
+        $pBedNo=null;
+        $pDateTimeAdmission=null;
+        $pVillage=null;
+        $pThana=null;
+        $pUpagilla=null;
+        $totalDeposite="0";
+        
+
+if(isset($_POST['conform'])){
+
+  $regiNo=$_POST['regiNo'];
+
+  $_SESSION['varname']=$regiNo;
+
+  $ret=mysqli_query($con,"select * from patient where regiNo='$regiNo' ");
+  $row=mysqli_fetch_array($ret);
+
+
+        $pName=$row['pName'];
+        $pAge=$row['pAge'];
+        $pSex=$row['pSex'];
+        $pPhoneNo=$row['pPhoneNo'];
+        $pCareOf=$row['pCareOf'];
+        $pBloodGroup=$row['pBloodGroup'];
+        $pRefferedDoctor=$row['pRefferedDoctor'];
+        $pCabinNo=$row['pCabinNo'];
+        $pWordNo=$row['pWordNo'];
+        $pBedNo=$row['pBedNo'];
+        $pDateTimeAdmission=$row['pDateTimeAdmission'];
+        $pVillage=$row['pVillage'];
+        $pThana=$row['pThana'];
+        $pUpagilla=$row['pUpagilla'];
+
+
+        $ret1=mysqli_query($con,"select * from patientadpayment where regiNo='$regiNo'");
+        while ($rows=mysqli_fetch_array($ret1)) {
+      
+          $totalDeposite+=$rows['pDepositMoney'];
+
+          $_SESSION['varadvance']=$totalDeposite;
+        }
+        
+
+      }
+
+
+      if(isset($_POST['save']))
+      {	
+      
+      
+              $radmissionFees=$_POST['radmissionFees'];
+              $rconsultanctFees=$_POST['rconsultanctFees'];
+              $rotfFees=$_POST['rotfFees'];
+              $rsurgeonFees=$_POST['rsurgeonFees'];
+              $ranesthetistFees=$_POST['ranesthetistFees'];
+              $rassistFees=$_POST['rassistFees'];
+              $rserviceFees=$_POST['rserviceFees'];
+              $rmedicineFees=$_POST['rmedicineFees'];
+              $rbedFees=$_POST['rbedFees'];
+              $rothersFees=$_POST['rothersFees'];
+              $rvat=$_POST['rvat'];
+              $rdiscount=$_POST['rdiscount'];
+              $radvanced= $_SESSION['varadvance'];
+              $totalPayment=$_POST['grandtotal'];
+
+
+              $pRemarks=$_POST['pRemarks'];
+              $regiNo=$_SESSION['varname'];
+
+
+session_start();
+
+$_SESSION['varradmissionFees']=$radmissionFees;
+$_SESSION['varrconsultanctFees']=$rconsultanctFees;
+$_SESSION['varrotfFees']=$rotfFees;
+$_SESSION['varrsurgeonFees']=$rsurgeonFees;
+$_SESSION['varranesthetistFees']=$ranesthetistFees;
+$_SESSION['varrassistFees']=$rassistFees;
+$_SESSION['varrserviceFees']=$rserviceFees;
+$_SESSION['varrmedicineFees']=$rmedicineFees;
+$_SESSION['varrbedFees']=$rbedFees;
+$_SESSION['varrothersFees']=$rothersFees;
+$_SESSION['varrvat']=$rvat;
+$_SESSION['varrdiscount']=$rdiscount;
+$_SESSION['varradvanced']=$radvanced;
+$_SESSION['vartotalPayment']=$totalPayment;
+
+
+
+
+
+
+      
+      $sql=mysqli_query($con,"insert into patient_receipt(regiNo,radmissionFees,rconsultanctFees,rotfFees,rsurgeonFees,ranesthetistFees,rassistFees,rserviceFees,rmedicineFees,rbedFees,rothersFees,rvat,rdiscount,radvanced,totalPayment) 
+                                  values('$regiNo','$radmissionFees','$rconsultanctFees','$rotfFees','$rsurgeonFees','$ranesthetistFees','$rassistFees','$rserviceFees','$rmedicineFees','$rbedFees','$rothersFees','$rvat','$rdiscount','$radvanced','$totalPayment')");
+      
+      
+      $sql1=mysqli_query($con,"update patient set pReleaseDate=now(), pRemarks='$pRemarks', profileTotalExpenses='$totalPayment', patientstatus='Inactive' where regiNo = '$regiNo'");
+      
+      
+      }
+
+
+
+
+?>
+
+
+
+
+
+
+
 <!doctype html>
 <html lang="en">
 
@@ -97,87 +229,111 @@
                       <h5 class="text-center">Search Patient</h5>
                     </div>
                     <div class="col-8">
-                      <form class="form-inline ml-auto">
-                        <input class="form-control rounded-0 col-8" type="search" placeholder="Enter Registration ID "
+                      <form class="form-inline ml-auto" method="post">
+                        <input class="form-control rounded-0 col-8" type="search" name="regiNo" placeholder="Enter Registration ID "
                           aria-label="Search">
-                        <button class="btn btn-primary my-0 my-sm-0 rounded-0 col-4" type="submit">Search</button>
+                        <button class="btn btn-primary my-0 my-sm-0 rounded-0 col-4" type="conform" name="conform">Search</button>
                       </form>
                     </div>
                   </div>
 
-                  <form>
+                  <form name="form1" method="post">
                     <div class="form-row">
                       <div class="form-group col-md-5">
                         <label for="pName">Patient Name: </label>
-                        <input type="text" class="form-control" id="pName" disabled="true">
+                        <input type="text" class="form-control" id="pName" value="<?php  echo $pName;?>" disabled="true">
                       </div>
                       <div class="form-group col-md-5">
                         <label for="pRegID">Registration ID: </label>
-                        <input type="text" class="form-control" id="pRegID" disabled="true">
+                        <input type="text" class="form-control" id="pRegID" value="<?php  echo $regiNo;?>" disabled="true">
                       </div>
                       <div class="form-group col-md-2">
                         <label for="pAge">Age: </label>
-                        <input type="number" class="form-control" id="pAge" disabled="true">
+                        <input type="text" class="form-control" id="pAge" value="<?php  echo $pAge;?>" disabled="true">
                       </div>
                       
                     </div>
                     <div class="form-row">
                       <div class="form-group col-md-3">
                         <label for="pGender">Gender: </label>
-                        <input type="text" class="form-control" id="pGender" disabled="true">
+                        <input type="text" class="form-control" id="pGender" value="<?php  echo $pSex;?>" disabled="true">
                       </div>
                       <div class="form-group col-md-4">
                         <label for="pPhone">Phone: </label>
-                        <input type="text" class="form-control" id="pPhone" disabled="true">
+                        <input type="text" class="form-control" id="pPhone" value="<?php  echo $pPhoneNo;?>" disabled="true">
                       </div>
                       <div class="form-group col-md-5">
                         <label for="pGuardian">Guardian Name: </label>
-                        <input type="text" class="form-control" id="pGuardian" disabled="true">
+                        <input type="text" class="form-control" id="pGuardian" value="<?php  echo $pCareOf;?>" disabled="true">
                       </div>
                     </div>
                     
                     <div class="form-row">
                       <div class="form-group col-md-2">
                         <label for="pBlood">Blood: </label>
-                        <input type="text" class="form-control" id="pBlood" disabled="true">
+                        <input type="text" class="form-control" id="pBlood" value="<?php  echo $pBloodGroup;?>" disabled="true">
                       </div>
                       <div class="form-group col-md-5">
                         <label for="pRefferedDoctor">Reffered Doctor: </label>
-                        <input type="text" class="form-control" id="pRefferedDoctor" disabled="true">
+                        <input type="text" class="form-control" id="pRefferedDoctor" value="<?php  echo $pRefferedDoctor;?>" disabled="true">
                       </div>
                       <div class="form-group col-md-5">
                         <label for="pHospitalRoom">Hospital Room: </label>
-                        <input type="text" class="form-control" id="pHospitalRoom" disabled="true">
+                        <input type="text" class="form-control" id="pHospitalRoom" value="<?php  echo $pCabinNo;?>, <?php  echo $pWordNo;?>, <?php  echo $pBedNo;?>" disabled="true">
                       </div>
                     </div>
 
                     <div class="form-row">
                       <div class="form-group col-md-4">
                         <label for="pAdmissionDate">Admission Date: </label>
-                        <input type="text" class="form-control" id="pAdmissionDate" disabled="true">
+                        <input type="text" class="form-control" id="pAdmissionDate" value="<?php  echo $pDateTimeAdmission;?>" disabled="true">
                       </div>
                       <div class="form-group col-md-8">
                         <label for="pAddress">Address: </label>
-                        <input type="text" class="form-control" id="pAddress" disabled="true">
+                        <input type="text" class="form-control" id="pAddress" value="<?php  echo $pVillage;?>, <?php  echo $pThana;?>, <?php  echo $pUpagilla;?>" disabled="true">
                       </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group col-md-4">
                         <label for="pReleaseDate">Release Date: </label>
-                        <input type="text" class="form-control" id="pReleaseDate" disabled="true">
+                        <input type="text" class="form-control" id="pReleaseDate" name='pReleaseDate' value="<?php date_default_timezone_set("Asia/Dhaka"); echo date("d-m-Y | h:i:sa"); ?>" disabled="true">
                       </div>
                       <div class="form-group col-md-8">
                         <label for="pRemarks">Remarks: </label>
-                        <textarea class="form-control" id="pRemarks" placeholder="Enter any remarks"></textarea>
+                        <textarea class="form-control" id="pRemarks" name='pRemarks' placeholder="Enter any remarks"></textarea>
                       </div>
                     </div>
 
                     
-                  </form>
+                  
 
                 </div>
                 <!-- End of Patient Information Section -->
+<script type="text/javascript">
+  function hello(){
+  var radmissionFees=eval(form1.radmissionFees.value);
+  var rconsultanctFees=eval(form1.rconsultanctFees.value);
+  var rotfFees=eval(form1.rotfFees.value);
+  var rsurgeonFees=eval(form1.rsurgeonFees.value);
+  var ranesthetistFees=eval(form1.ranesthetistFees.value);
+  var rassistFees=eval(form1.rassistFees.value);
+  var rserviceFees=eval(form1.rserviceFees.value);
+  var rbedFees=eval(form1.rbedFees.value);
+  var rmedicineFees=eval(form1.rmedicineFees.value);
+  var rothersFees=eval(form1.rothersFees.value);
+  
+    var Ptotalcost=radmissionFees+rconsultanctFees+rotfFees+rsurgeonFees+ranesthetistFees+rassistFees+rserviceFees+rbedFees+rmedicineFees+rothersFees;
 
+    var rvat=eval(form1.rvat.value);
+
+  var rdiscount=eval(form1.rdiscount.value);
+  var radvanced=eval(form1.radvanced.value);
+
+
+
+  form1.totalPayment.value=(Ptotalcost+rvat)-(rdiscount+radvanced)
+}
+</script>
                 <!-- Payment History -->
                 <div class="col-lg-6 col-m-12">
                   <h4 class="text-center mb-3">Receipt Form</h4>
@@ -192,79 +348,93 @@
                       <tr>
                         <td>1</td>
                         <td>Admission Fees</td>
-                        <td><input type="number" name="radmissionFees" value=0></td>
+                        <td><input type="number" name="radmissionFees" value="0" onBlur="hello()" ></td>
                       </tr>
                       <tr>
                         <td>2</td>
                         <td>Consultant Fees</td>
-                        <td><input type="number" step="0.01" name="rconsultanctFees" value=0>
+                        <td><input type="number" step="0.01" name="rconsultanctFees" value="0" onBlur="hello()" >
                         </td>
                       </tr>
                       <tr>
                         <td>3</td>
                         <td>O.T.F.</td>
-                        <td><input type="number" step="0.01" name="rotfFees" value=0></td>
+                        <td><input type="number" step="0.01" name="rotfFees" value="0" onBlur="hello()" ></td>
                       </tr>
                       <tr>
                         <td>4</td>
                         <td>Surgeon Fees</td>
-                        <td><input type="number" step="0.01" name="rsurgeonFees" value=0></td>
+                        <td><input type="number" step="0.01" name="rsurgeonFees" value="0" onBlur="hello()" ></td>
                       </tr>
                       <tr>
                         <td>5</td>
                         <td>Anesthetist Fees</td>
-                        <td><input type="number" step="0.01" name="ranesthetistFees" value=0>
+                        <td><input type="number" step="0.01" name="ranesthetistFees" value="0" onBlur="hello()" >
                         </td>
                       </tr>
                       <tr>
                         <td>6</td>
                         <td>Assist Fees</td>
-                        <td><input type="number" step="0.01" name="rassistFees" value=0></td>
+                        <td><input type="number" step="0.01" name="rassistFees" value="0" onBlur="hello()" ></td>
                       </tr>
                       <tr>
                         <td>7</td>
                         <td>Service Charge</td>
-                        <td><input type="number" step="0.01" name="rserviceFees" value=0></td>
+                        <td><input type="number" step="0.01" name="rserviceFees" value="0" onBlur="hello()" ></td>
                       </tr>
                       <tr>
                         <td>8</td>
                         <td>Medicine Cost</td>
-                        <td><input type="number" step="0.01" name="rmedicineFees" value=0></td>
+                        <td><input type="number" step="0.01" name="rmedicineFees" value="0" onBlur="hello()" ></td>
                       </tr>
                       <tr>
                         <td>9</td>
                         <td>Bed/Cabin Rent</td>
-                        <td><input type="number" step="0.01" name="rbedFees" value=0></td>
+                        <td><input type="number" step="0.01" name="rbedFees" value="0" onBlur="hello()" ></td>
                       </tr>
                       <tr>
                         <td>10</td>
                         <td>Others</td>
-                        <td><input type="number" step="0.01" name="rothersFees" value=0></td>
+                        <td><input type="number" step="0.01" name="rothersFees" value="0" onBlur="hello()" ></td>
                       </tr>
                       <tr>
                         <td>11</td>
                         <td>Vat</td>
-                        <td><input type="number" step="0.01" name="rvat" value=0></td>
+                        <td><input type="number" step="0.01" name="rvat" value="0" onBlur="hello()" ></td>
                       </tr>
 
                       <tr>
                         <td class="text-center" colspan="2">Discount : </td>
-                        <td><input type="number" step="0.01" name="rdiscount" value=0></td>
+                        <td><input type="number" step="0.01" name="rdiscount" value="0" onBlur="hello()" ></td>
                       </tr>
 
                       <tr>
                         <td colspan="2">Advance Payment : </td>
-                        <td><input type="number" step="0.01" name="radvanced" disabled="true"></td>
+                        <td><input type="number" step="0.01" name="radvanced" value="<?php  echo $totalDeposite;?>" disabled="true"></td>
+                      </tr>
+
+                      <tr>
+                        <td colspan="2">Total Payment : </td>
+                        <td><input type="number" step="0.01" name="totalPayment" disabled="true"></td>
+                      </tr>
+
+                      <tr>
+                        <td colspan="2">Grand Total : </td>
+                        <td><input type="number" step="0.01" name="grandtotal" ></td>
                       </tr>
 
 
                     </table>
                   </div>
 
-                  <div class="form-inline justify-content-center">
-                    <button type="submit" class="btn btn-primary rounded-0 receipt-btn" name="calculate">Calculate</button>
-                  </div>
+                  <div class="form-inline justify-content-center">  
+                    
+                  
+                    <button type="save" name="save" class="btn btn-primary rounded-0 receipt-btn" onclick=" window.open('invoice.php','_blank')" >Save</button>
 
+                    
+                  </div>
+                </form>
                 </div>
                 <!-- End of Payment History -->
 
