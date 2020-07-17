@@ -87,22 +87,9 @@ if(isset($_POST['conform'])){
               $regiNo=$_SESSION['varname'];
 
 
-session_start();
 
-$_SESSION['varradmissionFees']=$radmissionFees;
-$_SESSION['varrconsultanctFees']=$rconsultanctFees;
-$_SESSION['varrotfFees']=$rotfFees;
-$_SESSION['varrsurgeonFees']=$rsurgeonFees;
-$_SESSION['varranesthetistFees']=$ranesthetistFees;
-$_SESSION['varrassistFees']=$rassistFees;
-$_SESSION['varrserviceFees']=$rserviceFees;
-$_SESSION['varrmedicineFees']=$rmedicineFees;
-$_SESSION['varrbedFees']=$rbedFees;
-$_SESSION['varrothersFees']=$rothersFees;
-$_SESSION['varrvat']=$rvat;
-$_SESSION['varrdiscount']=$rdiscount;
-$_SESSION['varradvanced']=$radvanced;
-$_SESSION['vartotalPayment']=$totalPayment;
+
+
 
 
 
