@@ -1,225 +1,128 @@
-<!doctype html>
+
+<?php
+session_start();
+error_reporting(0);
+include("include/config.php");
+if(isset($_POST['submit']))
+{
+$ret=mysqli_query($con,"SELECT * FROM admin_table WHERE username='".$_POST['username']."' and password='".$_POST['password']."'");
+$num=mysqli_fetch_array($ret);
+if($num>0)
+{
+$extra="Admin";//
+$_SESSION['login']=$_POST['username'];
+$_SESSION['id']=$num['id'];
+$uip=$_SERVER['REMOTE_ADDR'];
+$status=1;
+
+$host=$_SERVER['HTTP_HOST'];
+$uri=rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+header("location:http://$host$uri/$extra");
+exit();
+}
+else
+{
+$_SESSION['errmsg']="Invalid username or password";
+$_SESSION['dlogin']=$_POST['username'];
+$uip=$_SERVER['REMOTE_ADDR'];
+$status=0;
+
+$extra="index.php";
+$host  = $_SERVER['HTTP_HOST'];
+$uri  = rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+header("location:http://$host$uri/$extra");
+exit();
+}
+}
+?>
+
+
+
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="title icon" href="images/title-img.png">
-  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"
-    integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
-    crossorigin="anonymous"></script>
-  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <title>Modern General Hospital And Diagnostic Center</title>
 
-  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-    integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous"> -->
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <!--external css-->
+    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+        
+    <!-- Custom styles for this template -->
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/style-responsive.css" rel="stylesheet">
 
-  <!-------------- Bootstrap css file ----------------->
-  <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
 
-  <link rel="stylesheet" href="./css/style.css">
+  <body>
 
-  <title>Modern Hospital</title>
-</head>
+      <!-- **********************************************************************************************************************************************************
+      MAIN CONTENT
+      *********************************************************************************************************************************************************** -->
 
-<body>
+	  <div id="login-page">
+	  	<div class="container">
+	  	
+		      <form class="form-login" method="post">
+		        <h2 class="form-login-heading">sign in now</h2>
+		        <div class="login-wrap">
+		            <input type="text" name="username" class="form-control" placeholder="User ID" autofocus>
+		            <br>
+		            <input type="password" name="password" class="form-control" placeholder="Password">
+		            <br>
+		            <button class="btn btn-theme btn-block" type="submit" name="submit"><i class="fa fa-lock"></i> SIGN IN</button>
+		            <hr>
+		        </div>
+		
+		          <!-- Modal -->
+		          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
+		              <div class="modal-dialog">
+		                  <div class="modal-content">
+		                      <div class="modal-header">
+		                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                          <h4 class="modal-title">Forgot Password ?</h4>
+		                      </div>
+		                      <div class="modal-body">
+		                          <p>Enter your e-mail address below to reset your password.</p>
+		                          <input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
+		
+		                      </div>
+		                      <div class="modal-footer">
+		                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+		                          <button class="btn btn-theme" type="button">Submit</button>
+		                      </div>
+		                  </div>
+		              </div>
+		          </div>
+		          <!-- modal -->
+		
+		      </form>	  	
+	  	
+	  	</div>
+	  </div>
 
-  <!-- navbar -->
-  <nav class="navbar navbar-expand-md navbar-light">
-    <button class="navbar-toggler ml-auto mb-2 bg-light" type="button" data-toggle="collapse" data-target="#myNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <div class="container-fluid">
-        <div class="row">
-          <!-- sidebar -->
-          <div id="app">		
-            <?php include('include/sidebar.php');?>
-                  <div class="app-content">
-          <!-- end of sidebar -->
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
 
-          <!-- top-nav -->
-          <div class="col-xl-10 col-lg-9 col-md-8 ml-auto bg-dark fixed-top py-2 top-navbar">
-            <div class="row align-items-center">
-              <div class="col-md-4">
-                <h4 class="text-light mb-0">Dashboard</h4>
-              </div>
-              <div class="col-md-8">
-                <ul class="navbar-nav">
-                  <li class="nav-item ml-md-auto"><a href="#" class="nav-link text-white p-1" data-toggle="modal"
-                      data-target="#sign-out"><i class="fas fa-sign-out-alt text-danger fa-lg mr-2"></i>Logout</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <!-- end of top-nav -->
-
-        </div>
-      </div>
-    </div>
-  </nav>
-  <!-- end of navbar -->
-
-  <!-- modal -->
-  <div class="modal fade" id="sign-out">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4>Want to leave?</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          Press logout to leave
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-dismiss="modal">Stay Here</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Logout</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- end of modal -->
-
-  <!-- cards -->
-  <section>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-xl-10 col-lg-9 col-md-8 ml-auto">
-          <div class="row pt-md-5 mt-md-3 mb-5">
-            <div class="col-xl-3 col-sm-6 p-2">
-              <div class="card card-common">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <i class="fas fa-shopping-cart fa-3x text-warning"></i>
-                    <div class="text-right text-secondary">
-                      <h5>Sales</h5>
-                      <h3>$135,000</h3>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer text-secondary">
-                  <i class="fas fa-sync mr-3"></i>
-                  <span>Update Now</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 p-2">
-              <div class="card card-common">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <i class="fas fa-money-bill-alt fa-3x text-success"></i>
-                    <div class="text-right text-secondary">
-                      <h5>Expenses</h5>
-                      <h3>$39,000</h3>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer text-secondary">
-                  <i class="fas fa-sync mr-3"></i>
-                  <span>Update Now</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 p-2">
-              <div class="card card-common">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <i class="fas fa-users fa-3x text-info"></i>
-                    <div class="text-right text-secondary">
-                      <h5>Users</h5>
-                      <h3>15,000</h3>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer text-secondary">
-                  <i class="fas fa-sync mr-3"></i>
-                  <span>Update Now</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 p-2">
-              <div class="card card-common">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <i class="fas fa-chart-line fa-3x text-danger"></i>
-                    <div class="text-right text-secondary">
-                      <h5>Visitors</h5>
-                      <h3>45,000</h3>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer text-secondary">
-                  <i class="fas fa-sync mr-3"></i>
-                  <span>Update Now</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- end of cards -->
+    <!--BACKSTRETCH-->
+    <!-- You can use an image of whatever size. This script will stretch to fit in any screen size.-->
+    <script type="text/javascript" src="assets/js/jquery.backstretch.min.js"></script>
+    <script>
+        $.backstretch("assets/img/login-bgicon.jpg", {speed: 500});
+    </script>
 
 
-  <!-- activities / quick post -->
-  <section>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-xl-10 col-lg-9 col-md-8 ml-auto">
-          <div class="row align-items-center mb-5">
-            <div class="col-xl-5">
-              <div class="card rounded">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-6">
-                      <div class="card bg-light">
-                        <i class="far fa-calendar-alt fa-8x text-warning d-block m-auto py-3"></i>
-                        <div class="card-body">
-                          <p class="card-text text-center font-weight-bold text-uppercase">Mon, May 26</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="card bg-light">
-                        <i class="far fa-clock fa-8x text-danger d-block m-auto py-3"></i>
-                        <div class="card-body">
-                          <p class="card-text text-center font-weight-bold text-uppercase">4:50 am</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- end of activities / quick post -->
-
-  
-
-  <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-    integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-    crossorigin="anonymous"></script> -->
-
-  <!--------------- JavaScript file ------------------>
-  <script src="./js/jquery-3.4.1.slim.min.js"></script>
-  <script src="./js/bootstrap.min.js"></script>
-  <script src="./js/main.js"></script>
-  <!-----x--------- JavaScript file --------x--------->
-
-  <script src="script.js"></script>
-
-
-</body>
-
+  </body>
 </html>
