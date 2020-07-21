@@ -87,18 +87,13 @@ if(isset($_POST['conform'])){
               $regiNo=$_SESSION['varname'];
 
 
-
-
-
-
-
-
-
-
+              $ret11=mysqli_query($con,"select * from adminlog where uid = '".$_SESSION['id']."' ORDER BY id DESC LIMIT 1");
+              $rows11=mysqli_fetch_array($ret11);
+              $username=$rows11['username'];
 
       
-      $sql=mysqli_query($con,"insert into patient_receipt(regiNo,radmissionFees,rconsultanctFees,rotfFees,rsurgeonFees,ranesthetistFees,rassistFees,rserviceFees,rmedicineFees,rbedFees,rothersFees,rvat,rdiscount,radvanced,totalPayment) 
-                                  values('$regiNo','$radmissionFees','$rconsultanctFees','$rotfFees','$rsurgeonFees','$ranesthetistFees','$rassistFees','$rserviceFees','$rmedicineFees','$rbedFees','$rothersFees','$rvat','$rdiscount','$radvanced','$totalPayment')");
+      $sql=mysqli_query($con,"insert into patient_receipt(regiNo,transect_by,radmissionFees,rconsultanctFees,rotfFees,rsurgeonFees,ranesthetistFees,rassistFees,rserviceFees,rmedicineFees,rbedFees,rothersFees,rvat,rdiscount,radvanced,totalPayment) 
+                                  values('$regiNo','$username','$radmissionFees','$rconsultanctFees','$rotfFees','$rsurgeonFees','$ranesthetistFees','$rassistFees','$rserviceFees','$rmedicineFees','$rbedFees','$rothersFees','$rvat','$rdiscount','$radvanced','$totalPayment')");
       
       
       $sql1=mysqli_query($con,"update patient set pReleaseDate=now(), pRemarks='$pRemarks', profileTotalExpenses='$totalPayment', patientstatus='Inactive' where regiNo = '$regiNo'");
