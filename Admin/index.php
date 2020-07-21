@@ -1,3 +1,12 @@
+<?php
+session_start();
+error_reporting(0);
+include('include/config.php');
+include('include/checklogin.php');
+check_login();
+?>
+
+
 <!doctype html>
 <html lang="en">
 
@@ -46,7 +55,7 @@
               <div class="col-md-8">
                 <ul class="navbar-nav">
                   <li class="nav-item ml-md-auto"><a href="#" class="nav-link text-white p-1" data-toggle="modal"
-                      data-target="#sign-out"><i class="fas fa-sign-out-alt text-danger fa-lg mr-2"></i>Logout</a></li>
+                      data-target="#sign-out"><i class="fas fa-sign-out-alt text-danger fa-lg mr-2" ></i>Logout</a></li>
                 </ul>
               </div>
             </div>
@@ -72,7 +81,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-success" data-dismiss="modal">Stay Here</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Logout</button>
+          <button type="button" class="btn btn-danger" onclick="window.location.href='logout.php'" data-dismiss="modal">Logout</button>
         </div>
       </div>
     </div>
@@ -175,7 +184,7 @@
                       <div class="card bg-light">
                         <i class="far fa-calendar-alt fa-8x text-warning d-block m-auto py-3"></i>
                         <div class="card-body">
-                          <p class="card-text text-center font-weight-bold text-uppercase">Mon, May 26</p>
+                          <p class="card-text text-center font-weight-bold text-uppercase"><?php date_default_timezone_set("Asia/Dhaka"); echo date("l - F"); echo"<br>"; echo date("d-m-Y "); ?></p>
                         </div>
                       </div>
                     </div>
@@ -183,7 +192,7 @@
                       <div class="card bg-light">
                         <i class="far fa-clock fa-8x text-danger d-block m-auto py-3"></i>
                         <div class="card-body">
-                          <p class="card-text text-center font-weight-bold text-uppercase">4:50 am</p>
+                          <p class="card-text text-center font-weight-bold text-uppercase"><?php date_default_timezone_set("Asia/Dhaka"); echo date("h : i : s a"); echo"<br>"; ?> <?php date_default_timezone_set("Asia/Dhaka"); echo date("H : i : s A");?></p>
                         </div>
                       </div>
                     </div>

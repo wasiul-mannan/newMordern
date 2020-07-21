@@ -1,9 +1,9 @@
 <?php
 session_start();
-//error_reporting(0);
+error_reporting(0);
 include('include/config.php');
-//include('include/checklogin.php');
-//check_login();
+include('include/checklogin.php');
+check_login();
 
 if(isset($_POST['submit']))
 {	
@@ -38,7 +38,7 @@ if($sql)
 
 
 echo "<script>alert('Status added Successfully');</script>";
-header('location:index.php');
+header('location:patient.php');
 
 }
 }
@@ -119,7 +119,7 @@ header('location:index.php');
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-success" data-dismiss="modal">Stay Here</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Logout</button>
+          <button type="button" class="btn btn-danger" onclick="window.location.href='logout.php'" data-dismiss="modal">Logout</button>
         </div>
       </div>
     </div>
@@ -825,57 +825,72 @@ $profileTotalExpenses=$row['profileTotalExpenses'];
                       <table class="table table-bordered table-dark text-center">
                 <thead>
                   <tr class="text-muted">
-                    <th>#</th>
-                    <th>RegID</th>
-                    <th>Name</th>
-                    <th>Guardian</th>
-                    <!--Any one from Mother and Husband-->
-                    <th>Age</th>
-                    <th>Phone</th>
-                    <th>Admission Date</th>
-                    <th>Address</th>
+                    <th>Admission Fees</th>
+                    <th>Consultant Fees</th>
+                    <th>O.T.F.</th>
+                    <th>Surgeon Fees</th>
+                    <th>Anesthetist Fees</th>
+                    <th>Assist Fees</th>
+                    <th>Service Charge</th>
+                    <th>Medicine Cost</th>
                     <!--Combination of Village and District-->
+                    <th>Bed/Cabin Rent</th>
+                    <th>Others</th>
+                    <th>Vat</th>
+                    <th>Discount</th>
                     <th>Advance Payment</th>
-                    <th>Payment Date</th>
-                    <th>Reffered Doctor</th>
-                    <th>Hospital Room</th>
+                    <th>Total Payment </th>
+                    <th>Grand Total</th>
                     <!--Combination of (Cabin) or (Word and Bed-5) Such as. (Cabin No:3) or (Word-2, Bed-3)-->
                   </tr>
                 </thead>
 
 <?php
-  $patientstatus="Active";
-	$ret2=mysqli_query($con,"select * from patient where patientstatus='$patientstatus' ");
-	$cnt=1;
-	while ($row=mysqli_fetch_array($ret2)) {
-    $regiNo=$row['regiNo'];
+	$ret23=mysqli_query($con,"select * from patient_receipt where regiNo='$regiNo' ");
+	while ($row1=mysqli_fetch_array($ret23)) {
+    $radmissionFees=$row1['radmissionFees'];
+    $rconsultanctFees=$row1['rconsultanctFees'];
+    $rotfFees=$row1['rotfFees'];
+    $rsurgeonFees=$row1['rsurgeonFees'];
+    $ranesthetistFees=$row1['ranesthetistFees'];
+    $rassistFees=$row1['rassistFees'];
+    $rserviceFees=$row1['rserviceFees'];
+    $rmedicineFees=$row1['rmedicineFees'];
+    $rbedFees=$row1['rbedFees'];
+    $rothersFees=$row1['rothersFees'];
+    $rvat=$row1['rvat'];
+    $rdiscount=$row1['rdiscount'];
+    $radvanced=$row1['radvanced'];
+
+    $grandtotal=($radmissionFees+$rconsultanctFees+$rotfFees+$rsurgeonFees+$ranesthetistFees+$rassistFees+$rserviceFees+$rmedicineFees+$rbedFees+$rothersFees+$rvat)-($rdiscount+$radvanced);
 ?>
                 <tbody>
                   <tr>
-                    <th><?php  echo $cnt;?></th>
-                    <td><?php  echo $regiNo ?></td>
-                    <td><?php  echo $row['pName'];?></td>
-                    <td><?php  echo $row['pCareOf'];?></td>
-                    <td><?php  echo $row['pAge'];?></td>
-                    <td><?php  echo $row['pPhoneNo'];?></td>
-                    <td><?php  echo $row['pDateTimeAdmission'];?></td>
-                    <td><?php  echo $row['pVillage'];?>, <?php  echo $row['pThana'];?>, <?php  echo $row['pUpagilla'];?></td>
-<?php
-$pDepositMoney=0;
-  $ret3=mysqli_query($con,"select * from patientadpayment where regiNo='$regiNo' ");
-  while ($row2=mysqli_fetch_array($ret3)) {
-    $pDepositMoney+=$row2['pDepositMoney'];
-    $pAdPaymentDate=$row2['pAdPaymentDate'];
-  }
-?>
-                    <td><?php  echo $pDepositMoney;?></td>
-                    <td><?php  echo $pAdPaymentDate;?></td>
-                    <td><?php  echo $row['pRefferedDoctor'];?></td>
-                    <td><?php  echo $row['pCabinNo'];?>, <?php  echo $row['pWordNo'];?>, <?php  echo $row['pBedNo'];?></td>
+                    <td><?php  echo $radmissionFees;?></td>
+                    <td><?php  echo $rconsultanctFees;?></td>
+                    <td><?php  echo $rotfFees;?></td>
+                    <td><?php  echo $rsurgeonFees;?></td>
+                    <td><?php  echo $ranesthetistFees;?></td>
+                    <td><?php  echo $rassistFees;?></td>
+                    <td><?php  echo $rserviceFees;?></td>
+                    <td><?php  echo $rmedicineFees;?></td>
+                    <td><?php  echo $rbedFees;?></td>
+                    <td><?php  echo $rothersFees;?></td>
+                    <td><?php  echo $rvat;?></td>
+                    <td><?php  echo $rdiscount;?></td>
+                    <td><?php  echo $radvanced;?></td>
+                    <td><?php  echo $row1['totalPayment'];?></td>
+                    <td><?php  echo $grandtotal;?></td>
+
+                    
+                  </tr>
+                  <tr>
+                  <th>Transect By</th>
+                  <td><?php  echo $row1['transect_by'];?></td>
                   </tr>
                 </tbody>
 <?php 
-$cnt=$cnt+1;
+
 } 
 ?>
               </table>

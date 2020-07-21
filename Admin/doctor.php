@@ -1,10 +1,9 @@
 <?php
 session_start();
-//error_reporting(0);
+error_reporting(0);
 include('include/config.php');
-//include('include/checklogin.php');
-//check_login();
-
+include('include/checklogin.php');
+check_login();
 if(isset($_POST['submit']))
 {	
 
@@ -103,7 +102,7 @@ header('location:doctor.php');
               </div>
               <div class="col-md-8">
                 <ul class="navbar-nav">
-                  <li class="nav-item ml-md-auto"><a href="#" class="nav-link text-white p-1" data-toggle="modal"
+                  <li class="nav-item ml-md-auto"><a href="logout.php" class="nav-link text-white p-1" data-toggle="modal"
                       data-target="#sign-out"><i class="fas fa-sign-out-alt text-danger fa-lg mr-2"></i>Logout</a></li>
                 </ul>
               </div>
@@ -130,7 +129,7 @@ header('location:doctor.php');
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-success" data-dismiss="modal">Stay Here</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Logout</button>
+          <button type="button" class="btn btn-danger" onclick="window.location.href='logout.php'" data-dismiss="modal">Logout</button>
         </div>
       </div>
     </div>

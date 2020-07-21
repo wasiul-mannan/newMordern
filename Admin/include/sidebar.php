@@ -28,6 +28,12 @@
               
               <li class="nav-link"><a href="managesalary.php" id="sidebar" class="nav-link text-white p-1 sidebar-link"><i
                     class="fas fa-chart-bar text-light fa-lg mr-2"></i>Manage Salary</a></li>
+
+            <li class="nav-link"><a href="useraccount.php" id="sidebar" class="nav-link text-white p-1 sidebar-link"><i
+                    class="fas fa-table text-light fa-lg mr-2"></i>Create User</a></li>
+            
+            <li class="nav-link"><a href="userlog.php" id="sidebar" class="nav-link text-white p-1 sidebar-link"><i
+                    class="fas fa-table text-light fa-lg mr-2"></i>User Log</a></li>
               
               <li class="nav-link"><a href="report.php" id="sidebar" class="nav-link text-white p-1 sidebar-link"><i
                     class="fas fa-table text-light fa-lg mr-2"></i>Report</a></li>

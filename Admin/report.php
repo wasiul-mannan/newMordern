@@ -1,3 +1,11 @@
+<?php
+session_start();
+error_reporting(0);
+include('include/config.php');
+include('include/checklogin.php');
+check_login();
+?>
+
 <!doctype html>
 <html lang="en">
 
@@ -72,7 +80,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-success" data-dismiss="modal">Stay Here</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Logout</button>
+          <button type="button" class="btn btn-danger" onclick="window.location.href='logout.php'" data-dismiss="modal">Logout</button>
         </div>
       </div>
     </div>
