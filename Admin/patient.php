@@ -5,6 +5,31 @@ include('include/config.php');
 include('include/checklogin.php');
 check_login();
 
+
+
+
+
+$ret22=mysqli_query($con,"select * from temporary");
+$row22=mysqli_fetch_array($ret22);
+
+$patientid=$row22['patientid'];
+$patientid=$patientid+1;
+
+date_default_timezone_set("Asia/Dhaka");
+$DT=date("d");
+$MT=date("m");
+
+if($DT=='01'){
+	$patientid=$DT;
+}
+
+$PREGINO=$DT.$MT.$patientid;
+
+
+
+
+
+
 if(isset($_POST['submit']))
 {	
 
@@ -30,6 +55,8 @@ if(isset($_POST['submit']))
 
 $sql=mysqli_query($con,"insert into patient(pName,pAge,pBloodGroup,pSex,pCareOf,pMotherName,pPhoneNo,pVillage,pThana,pUpagilla,pDistrict,regiNo,pRefferedDoctor,pCabinNo,pWordNo,pBedNo,patientstatus) 
                             values('$pName','$pAge','$pBloodGroup','$pSex','$pCareOf','$pMotherName','$pPhoneNo','$pVillage','$pThana','$pUpagilla','$pDistrict','$regiNo','$pRefferedDoctor','$pCabinNo','$pWordNo','$pBedNo','$patientstatus')");
+
+                            $sql22=mysqli_query($con,"update temporary set patientid='$patientid' where id='1'");
 if($sql)
 {
 
@@ -261,8 +288,9 @@ header('location:patient.php');
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="regiNo">Registration No: </label>
-                    <input type="text" class="form-control" name="regiNo">
+                    <input type="text" class="form-control" name="regiNo" value="<?php echo $PREGINO ?>" readonly>
                   </div>
+
                   <div class="form-group col-3">
                     <label for="pRefferedDoctor">Reffered Doctor:</label>
                     <select class="form-control" id="pRefferedDoctor" name="pRefferedDoctor">
